@@ -1,0 +1,125 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxFrame" name="mainFrame">
+    <title>Weather</title>
+    <size>550,700</size>
+    <object class="wxPanel" name="mainPanel">
+      <bg>#1C6CBC</bg>
+      <font>
+        <size>10</size>
+        <family>default</family>
+        <style>normal</style>
+        <weight>bold</weight>
+        <underlined>0</underlined>
+      </font>
+      <object class="wxBoxSizer">
+        <orient>wxVERTICAL</orient>
+        <object class="sizeritem">
+          <object class="wxStaticText">
+            <label>Check out this weather app!</label>
+            <style>wxALIGN_CENTRE</style>
+            <fg>#FFFFFF</fg>
+            <font>
+              <size>15</size>
+            </font>
+          </object>
+          <option>0</option>
+          <flag>wxALL|wxEXPAND</flag>
+          <border>5</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxStaticText">
+            <label>This app analyses temperatures of De Bilt. The temperatures can be
+              averaged by years or days resulting in a day curve or a year curve.
+              This average can be taken in a range of years. The raw temperature curves
+              are smoothed. The mouse over is enabled for the smooth curves only and
+              shows the date and temperature at that point of the curve.
+              The first day of summer is calculated from defining summer as the warmest
+              three months of the year. The temperature increase over the years is
+              shown with the year curve.
+            </label>
+            <style>wxALIGN_CENTRE</style>
+            <fg>#FFFFFF</fg>
+          </object>
+        </object>
+        <object class="sizeritem">
+          <object class="wxBoxSizer">
+            <orient>wxHORIZONTAL</orient>
+            <object class="sizeritem">
+              <object class="wxButton" name="makeDayCurve">
+                <label>Make day curve</label>
+                <fg>#FFFFFF</fg>
+                <bg>#00397A</bg>
+              </object>
+              <option>0</option>
+              <flag>wxALL|wxEXPAND</flag>
+              <border>2</border>
+            </object>
+            <object class="sizeritem">
+              <object class="wxButton" name="makeYearCurve">
+                <label>Make year curve</label>
+                <fg>#FFFFFF</fg>
+                <bg>#00397A</bg>
+              </object>
+              <option>0</option>
+              <flag>wxALL|wxEXPAND</flag>
+              <border>2</border>
+            </object>
+          </object>
+          <option>0</option>
+          <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+          <border>5</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxBoxSizer">
+            <orient>wxHORIZONTAL</orient>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>First year: </label>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxTextCtrl" name="firstYear">
+                <value></value>
+              </object>
+              <option>0</option>
+            </object>
+          </object>
+        </object>
+        <object class="sizeritem">
+          <object class="wxBoxSizer">
+            <orient>wxHORIZONTAL</orient>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>Last year: </label>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxTextCtrl" name="lastYear">
+                <value></value>
+              </object>
+              <option>0</option>
+            </object>
+          </object>
+        </object>
+        <object class="sizeritem">
+          <object class="wxStaticText" name="textOutput">
+            <fg>#FFFFFF</fg>
+            <label></label>
+          </object>
+        </object>
+        <object class="sizeritem">
+          <object class="wxPanel" name="plotContainerPanel"/>
+          <option>1</option>
+          <flag>wxEXPAND</flag>
+        </object>
+        <object class="sizeritem">
+          <object class="wxStaticText" name="tempOfDate">
+            <fg>#FFFFFF</fg>
+            <label>Mouse over curve: &#10;</label>
+          </object>
+        </object>
+      </object>
+    </object>
+  </object>
+</resource>
