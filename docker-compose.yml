@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      dockerfile: docker/app/Dockerfile
+      context: .
+      args:
+        uid: ${UID}
+        upass: ${UPASS}
+        pythonversion: ${PYTHON_VERSION}
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    container_name: weather
+    ports:
+      - "80:80"
+    networks:
+      weather:
+
+networks:
+  weather:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.30.0.0/24"
