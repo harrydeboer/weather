@@ -59,7 +59,7 @@ class PlotPanel(wx.Panel):
                                            " " + str(int(event.ydata * 10) / 10))
                     else:
                         date = dt.datetime(2019, 1, 1) + dt.timedelta(int(event.xdata))
-                        monthMean = Curve.getMonthMean(curve.get_ydata(), int(date.strftime("%m")))
+                        monthMean = Curve.getMonthMean(curve.get_ydata(), int(date.strftime("%m")), 2019)
                         mouseOver.SetLabel("Mouse over curve: " +
                                            date.strftime("%d %B") + " " + str(int(event.ydata * 10) / 10) + "\n"
                                            + "Month mean: " + str(int(monthMean * 10) / 10))

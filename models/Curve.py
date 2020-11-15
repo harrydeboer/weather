@@ -58,13 +58,17 @@ class Curve:
 
         return dt.datetime(2019, 1, 1) + dt.timedelta(firstDayOfSummer)
 
-    # The curve has a mean per month.
+    # The curve can have a mean per month if it is a day curve.
     @staticmethod
-    def getMonthMean(y: np.ndarray, month: int) -> float:
+    def getMonthMean(y: np.ndarray, month: int, year: int) -> float:
 
         if y.size != 365:
-            raise Exception('This stat can only be calculated for year curves.')
+            raise Exception('This stat can only be calculated for day curves.')
 
-        daysCumulative = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365]
+        dayNumberBegin = dt.datetime(year, month, 1).timetuple().tm_yday
+        if month == 12:
+            dayNumberEnd = dt.datetime(year, month, 31).timetuple().tm_yday
+        else:
+            dayNumberEnd = dt.datetime(year, month + 1, 1).timetuple().tm_yday - 1
 
-        return y[daysCumulative[month - 1]:daysCumulative[month]].mean(axis=0)
+        return y[dayNumberBegin - 1:dayNumberEnd].mean(axis=0)
