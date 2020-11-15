@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import datetime as datetime
 from models.DayYearArrayBuilder import DayYearArrayBuilder
-from models.CsvReader import CsvReader
+from models.KNMIData import CsvReader
 from models.Curve import Curve
 
 

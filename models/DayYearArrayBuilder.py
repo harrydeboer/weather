@@ -7,13 +7,13 @@ class DayYearArrayBuilder:
 
     # An array of temperatures per year and per day is made.
     @staticmethod
-    def makeArray(csvArray: np.ndarray, firstYear: int, lastYear: int, columnName: DataColumn):
+    def makeArray(data: np.ndarray, firstYear: int, lastYear: int, columnName: DataColumn) -> np.ndarray:
 
-        dates = csvArray[:, 1]
+        dates = data[:, 1]
 
         # Three temperature arrays can be made. One for the minimal temperature values,
         # one for the mean temperature values and one for the maximum temperature values.
-        column = csvArray[:, DataColumn[columnName].value]
+        column = data[:, DataColumn[columnName].value]
 
         # The KNMI data has temperatures times ten so they have to be divided by 10.
         column = column.astype(float) / 10

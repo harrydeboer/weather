@@ -1,6 +1,6 @@
 import unittest
 from models.DayYearArrayBuilder import DayYearArrayBuilder
-from models.CsvReader import CsvReader
+from models.KNMIData import CsvReader
 
 
 class TestDayYearArrayBuilder(unittest.TestCase):

@@ -1,10 +1,11 @@
 import wx
 import wx.xrc as xrc
 from panels.PlotPanel import PlotPanel
-from models.CsvReader import CsvReader
+from models.KNMIData import KNMIData
 from models.DayYearArrayBuilder import DayYearArrayBuilder
 from models.Curve import Curve
 from models.DataColumn import DataColumn
+from typing import Tuple
 import locale
 
 
@@ -21,25 +22,28 @@ class WeatherApp(wx.App):
         self.mainFrame = self.res.LoadFrame(None, "mainFrame")
         self.mainPanel = xrc.XRCCTRL(self.mainFrame, "mainPanel")
 
-        # The data is read.
-        # The first and last years of the file are retrieved and put in the GUI as initial range values.
-        self.csvReader = CsvReader()
+        # The data is read by instantiating the KNMIData class.
+        # The first and last years of the file are retrieved and put in the GUI as initial year range values.
+        self.knmiData = KNMIData()
         self.firstYearInput = xrc.XRCCTRL(self.mainFrame, "firstYear")
-        self.firstYearInput.SetValue(self.csvReader.minYearFile)
+        self.firstYearInput.SetValue(self.knmiData.minYearFile)
         self.lastYearInput = xrc.XRCCTRL(self.mainFrame, "lastYear")
-        self.lastYearInput.SetValue(self.csvReader.maxYearFile)
+        self.lastYearInput.SetValue(self.knmiData.maxYearFile)
 
         plotContainerPanel = xrc.XRCCTRL(self.mainFrame, "plotContainerPanel")
         sizer = wx.BoxSizer(wx.VERTICAL)
 
-        # The DateTemp shows the first day of summer or the temperature increase.
-        self.tempOfDate = xrc.XRCCTRL(self.mainFrame, 'tempOfDate')
-
-        # The TextOutput shows the mouseover event of the plot.
+        # The textOutput shows the first day of summer or the temperature increase.
         self.textOutput = xrc.XRCCTRL(self.mainFrame, 'textOutput')
+
+        # The mouseOver shows the mouse over event text.
+        self.errorMessage = xrc.XRCCTRL(self.mainFrame, 'errorMessage')
+
+        # The mouseOver shows the mouseover event text of the plot.
+        self.mouseOver = xrc.XRCCTRL(self.mainFrame, 'mouseOver')
         self.plotPanel = PlotPanel(plotContainerPanel)
         self.plotPanel.fig.canvas.mpl_connect('motion_notify_event',
-                                              lambda event: self.plotPanel.onPlotHover(event, self.tempOfDate))
+                                              lambda event: self.plotPanel.onPlotHover(event, self.mouseOver))
         sizer.Add(self.plotPanel, 1, wx.EXPAND)
         plotContainerPanel.SetSizer(sizer)
 
@@ -77,47 +81,43 @@ class WeatherApp(wx.App):
                                  str(int((curve.ySmooth[-1] - curve.ySmooth[0]) * 10) / 10) + "°.")
 
         # The user values from the first and last year text controls is validated.
-    def __validateYearRange(self, curveType: str):
+    def __validateYearRange(self, curveType: str) -> Tuple[int, int]:
 
         firstYear = self.firstYearInput.GetValue()
         lastYear = self.lastYearInput.GetValue()
 
         if not firstYear.isdigit() or not lastYear.isdigit():
-            self.textOutput.SetForegroundColour((255, 0, 0))
             text = 'Year range input cannot be empty, text or negative.'
-            self.textOutput.SetLabel(text)
+            self.errorMessage.SetLabel(text)
 
             raise Exception(text)
 
         firstYear, lastYear = int(firstYear), int(lastYear)
         if lastYear < firstYear:
-            self.textOutput.SetForegroundColour((255, 0, 0))
             text = 'Last year cannot be smaller than first year.'
-            self.textOutput.SetLabel(text)
+            self.errorMessage.SetLabel(text)
 
             raise Exception(text)
 
-        if firstYear < int(self.csvReader.minYearFile) or lastYear > int(self.csvReader.maxYearFile):
-            self.textOutput.SetForegroundColour((255, 0, 0))
-            text = 'Years out of range ' + self.csvReader.minYearFile + '-' + self.csvReader.maxYearFile + '.'
-            self.textOutput.SetLabel(text)
+        if firstYear < int(self.knmiData.minYearFile) or lastYear > int(self.knmiData.maxYearFile):
+            text = 'Years out of range ' + self.knmiData.minYearFile + '-' + self.knmiData.maxYearFile + '.'
+            self.errorMessage.SetLabel(text)
 
             raise Exception(text)
 
         if curveType == 'yearCurve' and lastYear - firstYear < 5 - 1:
-            self.textOutput.SetForegroundColour((255, 0, 0))
             text = 'Range should be 5 years at least.'
-            self.textOutput.SetLabel(text)
+            self.errorMessage.SetLabel(text)
 
             raise Exception(text)
 
-        self.textOutput.SetForegroundColour((255, 255, 255))
+        self.errorMessage.SetLabel('')
 
         return firstYear, lastYear
 
-    def __plotRawSmooth(self, firstYear: int, lastYear: int, columnName: DataColumn, cla: bool, meanAxis: int):
+    def __plotRawSmooth(self, firstYear: int, lastYear: int, columnName: DataColumn, cla: bool, meanAxis: int) -> Curve:
 
-        tempArray = DayYearArrayBuilder.makeArray(self.csvReader.csvArray, firstYear, lastYear, columnName)
+        tempArray = DayYearArrayBuilder.makeArray(self.knmiData.array, firstYear, lastYear, columnName)
         curve = Curve(tempArray, meanAxis, firstYear, lastYear)
         self.plotPanel.plot(curve.x, curve.y, curve.ySmooth, cla)
 

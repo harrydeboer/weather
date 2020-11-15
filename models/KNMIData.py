@@ -2,25 +2,25 @@ import csv
 import numpy as np
 
 
-class CsvReader:
+class KNMIData:
 
     def __init__(self):
 
         # Read txt file as list.
-        csvList = list()
+        txtList = list()
         with open('data/KNMI.txt', newline='') as inputfile:
             reader = csv.reader(inputfile)
             for row in reader:
                 if row[0][0] == '#':
                     continue
                 else:
-                    csvList.append(row)
+                    txtList.append(row)
 
-        self.csvArray = np.asarray(csvList)
+        self.array = np.asarray(txtList)
 
         # Remove the days of the first year if it is not complete.
         yearToDelete = None
-        for index, row in enumerate(self.csvArray):
+        for index, row in enumerate(self.array):
 
             year = int(row[1][:4])
             if index == 0 and row[1][4:8] != '0101':
@@ -28,12 +28,12 @@ class CsvReader:
                 continue
 
             if year == yearToDelete + 1:
-                self.csvArray = self.csvArray[index:]
+                self.array = self.array[index:]
                 break
 
         # Remove the days of the last year if it is not complete.
         yearToDelete = None
-        for index, row in enumerate(reversed(self.csvArray)):
+        for index, row in enumerate(reversed(self.array)):
 
             year = int(row[1][:4])
             if index == 0 and row[1][4:8] != '1231':
@@ -41,9 +41,9 @@ class CsvReader:
                 continue
 
             if year == yearToDelete - 1:
-                self.csvArray = self.csvArray[:-index]
+                self.array = self.array[:-index]
                 break
 
-        dates = self.csvArray[:, 1]
+        dates = self.array[:, 1]
         self.minYearFile = dates[1][:4]
         self.maxYearFile = dates[-1][:4]

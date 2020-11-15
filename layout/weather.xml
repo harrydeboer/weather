@@ -109,12 +109,18 @@
           </object>
         </object>
         <object class="sizeritem">
+          <object class="wxStaticText" name="errorMessage">
+            <fg>#FF0000</fg>
+            <label></label>
+          </object>
+        </object>
+        <object class="sizeritem">
           <object class="wxPanel" name="plotContainerPanel"/>
           <option>1</option>
           <flag>wxEXPAND</flag>
         </object>
         <object class="sizeritem">
-          <object class="wxStaticText" name="tempOfDate">
+          <object class="wxStaticText" name="mouseOver">
             <fg>#FFFFFF</fg>
             <label>Mouse over curve: &#10;</label>
           </object>

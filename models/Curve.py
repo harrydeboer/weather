@@ -37,7 +37,7 @@ class Curve:
 
     # The Savitzky-Golay savgol_filter function does not always work right away.
     # The same input is given untill there is no exception.
-    def __makeSmoothCurve(self, y, window):
+    def __makeSmoothCurve(self, y, window) -> np.ndarray:
 
         try:
             result = savgol_filter(y, window, 3)
@@ -51,7 +51,7 @@ class Curve:
     # Then the absolute value is taken.
     # Then the first day of summer is the point where these absolute values are minimal.
     # Then the first day is translated into a date object.
-    def getFirstDateSummer(self):
+    def getFirstDateSummer(self) -> dt:
 
         subtract = np.subtract(self.ySmooth[92:], self.ySmooth[:365 - 92])
         firstDayOfSummer = int(np.where(np.absolute(subtract) == np.min(np.absolute(subtract)))[0][0])
@@ -60,7 +60,7 @@ class Curve:
 
     # The curve has a mean per month.
     @staticmethod
-    def getMonthMean(y: np.ndarray, month: int):
+    def getMonthMean(y: np.ndarray, month: int) -> float:
 
         if y.size != 365:
             raise Exception('This stat can only be calculated for year curves.')

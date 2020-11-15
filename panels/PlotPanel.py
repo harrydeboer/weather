@@ -41,7 +41,7 @@ class PlotPanel(wx.Panel):
 
         self.canvas.draw()
 
-    def onPlotHover(self, event: MouseEvent, tempOfDate: StaticText):
+    def onPlotHover(self, event: MouseEvent, mouseOver: StaticText):
 
         for index, curve in enumerate(self.axes.get_lines()):
 
@@ -55,11 +55,11 @@ class PlotPanel(wx.Panel):
                     # The year plot has years (xdata) starting from 1901. The day plot has days (xdata) till 366.
                     # The year plot can thus be distinguished by the xdata being greater than 365.
                     if event.xdata > 366:
-                        tempOfDate.SetLabel("Mouse over curve: " + str(int(event.xdata)) +
-                                            " " + str(int(event.ydata * 10) / 10))
+                        mouseOver.SetLabel("Mouse over curve: " + str(int(event.xdata)) +
+                                           " " + str(int(event.ydata * 10) / 10))
                     else:
                         date = dt.datetime(2019, 1, 1) + dt.timedelta(int(event.xdata))
                         monthMean = Curve.getMonthMean(curve.get_ydata(), int(date.strftime("%m")))
-                        tempOfDate.SetLabel("Mouse over curve: " +
-                                            date.strftime("%d %B") + " " + str(int(event.ydata * 10) / 10) + "\n"
-                                            + "Month mean: " + str(int(monthMean * 10) / 10))
+                        mouseOver.SetLabel("Mouse over curve: " +
+                                           date.strftime("%d %B") + " " + str(int(event.ydata * 10) / 10) + "\n"
+                                           + "Month mean: " + str(int(monthMean * 10) / 10))
