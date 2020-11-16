@@ -17,6 +17,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common
 RUN DEBIAN_FRONTEND=noninteractive add-apt-repository ppa:deadsnakes/ppa
 RUN apt-get -y install python${pythonversion}
 RUN apt-get -y install python3-pip
+WORKDIR /var/www/html
+COPY requirements.txt /var/www/html/requirements.txt
+RUN pip3 install -r requirements.txt
 
 RUN useradd -G www-data,root -u ${uid} -d /home/devuser devuser
 

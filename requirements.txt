@@ -4,4 +4,3 @@ scipy==1.5.3
 pyinstaller==4.0
 pyqt5==5.15.1
 pyqt5-tools==5.15.1.2
-PyQt5Designer==5.14.1
