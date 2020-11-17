@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import datetime as datetime
 from models.DayYearArrayBuilder import DayYearArrayBuilder
-from models.KNMIData import CsvReader
+from models.KNMIData import KNMIData
 from models.Curve import Curve
 
 
@@ -12,8 +12,8 @@ class TestCurve(unittest.TestCase):
 
         self.firstYear = 1902
         self.lastYear = 2019
-        csvReader = CsvReader()
-        tempArray = DayYearArrayBuilder.makeArray(csvReader.csvArray, self.firstYear, self.lastYear, 'meanTemp')
+        csvReader = KNMIData()
+        tempArray = DayYearArrayBuilder.makeArray(csvReader.array, self.firstYear, self.lastYear, 'meanTemp')
         self.curve = Curve(tempArray, 1, self.firstYear, self.lastYear)
 
     def testAverTempSmooth(self):
@@ -29,6 +29,6 @@ class TestCurve(unittest.TestCase):
     def testCalcMonthMean(self):
 
         ySmooth = np.ones(365)
-        mean = Curve.getMonthMean(ySmooth, 1)
+        mean = Curve.getMonthMean(ySmooth, 1, 2019)
 
         self.assertEqual(mean, 1)
