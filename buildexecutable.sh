@@ -1,5 +1,5 @@
 #!/bin/bash
 source venv/Scripts/activate
-rm -r build
-rm -r dist
+[ -d "build" ] && rm -r build
+[ -d "dist" ] && rm -r dist
 pyinstaller app.spec
