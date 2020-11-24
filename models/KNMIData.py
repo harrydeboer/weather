@@ -13,6 +13,13 @@ class KNMIData:
             for row in reader:
                 if row[0][0] == '#':
                     continue
+                # elif row[1] == '19450401':
+                #     jan = 1
+                elif len(row) > 10 and row[4] == '     ':
+                    newlist = ['0'] * len(row)
+                    newlist[0] = row[0]
+                    newlist[1] = row[1]
+                    txtList.append(newlist)
                 else:
                     txtList.append(row)
 
@@ -23,11 +30,8 @@ class KNMIData:
         for index, row in enumerate(self.array):
 
             year = int(row[1][:4])
-            if index == 0 and row[1][4:8] != '0101':
-                yearToDelete = year
-                continue
 
-            if year == yearToDelete + 1:
+            if year == 1904:
                 self.array = self.array[index:]
                 break
 
