@@ -23,7 +23,7 @@ class WeatherApp(wx.App):
         self.mainPanel = xrc.XRCCTRL(self.mainFrame, 'mainPanel')
 
         sizer = wx.BoxSizer()
-        self.notebook = wx.Notebook(self.mainPanel)
+        self.notebook = xrc.XRCCTRL(self.mainPanel, 'notebook')
         sizer.Add(self.notebook, 1, wx.EXPAND)
         self.mainPanel.SetSizer(sizer)
         self.mainPanel.Layout()
@@ -47,24 +47,29 @@ class WeatherApp(wx.App):
 
         plotContainerPanelTemp = xrc.XRCCTRL(self.pageTemperature, "plotContainerPanel")
         plotContainerPanelWind = xrc.XRCCTRL(self.pageWind, "plotContainerPanel")
-        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizerTemp = wx.BoxSizer(wx.VERTICAL)
+        sizerWind = wx.BoxSizer(wx.VERTICAL)
 
         # The textOutput shows the first day of summer or the temperature increase.
         self.textOutput = xrc.XRCCTRL(self.pageTemperature, 'textOutput')
 
         # The mouseOver shows the mouse over event text.
-        self.errorMessage = xrc.XRCCTRL(self.pageTemperature, 'errorMessage')
+        self.errorMessageTemp = xrc.XRCCTRL(self.pageTemperature, 'errorMessage')
+        self.errorMessageWind = xrc.XRCCTRL(self.pageWind, 'errorMessage')
 
         # The mouseOver shows the mouseover event text of the plot.
-        self.mouseOver = xrc.XRCCTRL(self.pageTemperature, 'mouseOver')
+        self.mouseOverTemp = xrc.XRCCTRL(self.pageTemperature, 'mouseOver')
+        self.mouseOverWind = xrc.XRCCTRL(self.pageWind, 'mouseOver')
         self.plotPanelTemp = PlotPanel(plotContainerPanelTemp)
         self.plotPanelWind = PlotPanel(plotContainerPanelWind)
-        self.plotPanelTemp.fig.canvas.mpl_connect('motion_notify_event',
-                                              lambda event: self.plotPanelTemp.onPlotHover(event, self.mouseOver))
-        sizer.Add(self.plotPanelTemp, 1, wx.EXPAND)
-        sizer.Add(self.plotPanelWind, 1, wx.EXPAND)
-        plotContainerPanelTemp.SetSizer(sizer)
-        plotContainerPanelWind.SetSizer(sizer)
+        self.plotPanelTemp.fig.canvas.mpl_connect(
+            'motion_notify_event', lambda event: self.plotPanelTemp.onPlotHover(event, self.mouseOverTemp))
+        self.plotPanelWind.fig.canvas.mpl_connect(
+            'motion_notify_event', lambda event: self.plotPanelWind.onPlotHover(event, self.mouseOverWind))
+        sizerTemp.Add(self.plotPanelTemp, 1, wx.EXPAND)
+        sizerWind.Add(self.plotPanelWind, 1, wx.EXPAND)
+        plotContainerPanelTemp.SetSizer(sizerTemp)
+        plotContainerPanelWind.SetSizer(sizerWind)
 
         # The makeDayCurve and makeYearCurve button click events are bound to callbacks.
         self.makeDayCurveTemp = xrc.XRCCTRL(self.pageTemperature, "makeDayCurve")
@@ -76,10 +81,18 @@ class WeatherApp(wx.App):
 
         # When the mouse hovers over the show_day_curve and show_year_curve buttons the button text turns black
         # and when the mouse leaves the text is white again.
-        self.makeDayCurveTemp.Bind(wx.EVT_ENTER_WINDOW, lambda event: self.makeDayCurveTemp.SetForegroundColour('#000000'))
-        self.makeDayCurveTemp.Bind(wx.EVT_LEAVE_WINDOW, lambda event: self.makeDayCurveTemp.SetForegroundColour('#FFFFFF'))
-        self.makeYearCurveTemp.Bind(wx.EVT_ENTER_WINDOW, lambda event: self.makeYearCurveTemp.SetForegroundColour('#000000'))
-        self.makeYearCurveTemp.Bind(wx.EVT_LEAVE_WINDOW, lambda event: self.makeYearCurveTemp.SetForegroundColour('#FFFFFF'))
+        self.makeDayCurveTemp.Bind(wx.EVT_ENTER_WINDOW,
+                                   lambda event: self.makeDayCurveTemp.SetForegroundColour('#000000'))
+        self.makeDayCurveTemp.Bind(wx.EVT_LEAVE_WINDOW,
+                                   lambda event: self.makeDayCurveTemp.SetForegroundColour('#FFFFFF'))
+        self.makeDayCurveWind.Bind(wx.EVT_ENTER_WINDOW,
+                                   lambda event: self.makeDayCurveWind.SetForegroundColour('#000000'))
+        self.makeDayCurveWind.Bind(wx.EVT_LEAVE_WINDOW,
+                                   lambda event: self.makeDayCurveWind.SetForegroundColour('#FFFFFF'))
+        self.makeYearCurveTemp.Bind(wx.EVT_ENTER_WINDOW,
+                                    lambda event: self.makeYearCurveTemp.SetForegroundColour('#000000'))
+        self.makeYearCurveTemp.Bind(wx.EVT_LEAVE_WINDOW,
+                                    lambda event: self.makeYearCurveTemp.SetForegroundColour('#FFFFFF'))
 
         self.mainFrame.Show(isShown)
 
@@ -107,43 +120,46 @@ class WeatherApp(wx.App):
                                  str(int((curve.ySmooth[-1] - curve.ySmooth[0]) * 10) / 10) + "°.")
 
         # The user values from the first and last year text controls is validated.
+
     def __validateYearRange(self, curveType: str, page: str) -> Tuple[int, int]:
 
         if page == 'temperature':
             firstYear = self.firstYearInputTemp.GetValue()
             lastYear = self.lastYearInputTemp.GetValue()
+            errorMessage = self.errorMessageTemp
         elif page == 'wind':
             firstYear = self.firstYearInputWind.GetValue()
             lastYear = self.lastYearInputWind.GetValue()
+            errorMessage = self.errorMessageWind
         else:
             raise Exception('Page must be either temperature or wind.')
 
         if not firstYear.isdigit() or not lastYear.isdigit():
             text = 'Year range input cannot be empty, text or negative.'
-            self.errorMessage.SetLabel(text)
+            errorMessage.SetLabel(text)
 
             raise Exception(text)
 
         firstYear, lastYear = int(firstYear), int(lastYear)
         if lastYear < firstYear:
             text = 'Last year cannot be smaller than first year.'
-            self.errorMessage.SetLabel(text)
+            errorMessage.SetLabel(text)
 
             raise Exception(text)
 
         if firstYear < int(self.knmiData.minYearFile) or lastYear > int(self.knmiData.maxYearFile):
             text = 'Years out of range ' + self.knmiData.minYearFile + '-' + self.knmiData.maxYearFile + '.'
-            self.errorMessage.SetLabel(text)
+            errorMessage.SetLabel(text)
 
             raise Exception(text)
 
         if curveType == 'yearCurve' and lastYear - firstYear < 5 - 1:
             text = 'Range should be 5 years at least.'
-            self.errorMessage.SetLabel(text)
+            errorMessage.SetLabel(text)
 
             raise Exception(text)
 
-        self.errorMessage.SetLabel('')
+        errorMessage.SetLabel('')
 
         return firstYear, lastYear
 
@@ -154,7 +170,7 @@ class WeatherApp(wx.App):
         if columnName == 'windSpeed':
             self.plotPanelWind.plot(curve.x, curve.y, curve.ySmooth, cla)
         else:
-           self.plotPanelTemp.plot(curve.x, curve.y, curve.ySmooth, cla)
+            self.plotPanelTemp.plot(curve.x, curve.y, curve.ySmooth, cla)
 
         return curve
 
