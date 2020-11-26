@@ -4,6 +4,8 @@ from panels.PlotPanel import PlotPanel
 from models.KNMIData import KNMIData
 from models.DayYearArrayBuilder import DayYearArrayBuilder
 from models.Curve import Curve
+import numpy as np
+import math
 from models.DataColumn import DataColumn
 from typing import Tuple
 import locale
@@ -76,6 +78,8 @@ class WeatherApp(wx.App):
         self.makeDayCurveTemp.Bind(wx.EVT_BUTTON, self.OnMakeDayCurveTemp)
         self.makeDayCurveWind = xrc.XRCCTRL(self.pageWind, "makeDayCurve")
         self.makeDayCurveWind.Bind(wx.EVT_BUTTON, self.OnMakeDayCurveWind)
+        self.makeDayCurveVector = xrc.XRCCTRL(self.pageWind, "makeDayCurveVector")
+        self.makeDayCurveVector.Bind(wx.EVT_BUTTON, self.OnMakeDayCurveVector)
         self.makeYearCurveTemp = xrc.XRCCTRL(self.pageTemperature, "makeYearCurve")
         self.makeYearCurveTemp.Bind(wx.EVT_BUTTON, self.OnMakeYearCurveTemp)
 
@@ -89,6 +93,10 @@ class WeatherApp(wx.App):
                                    lambda event: self.makeDayCurveWind.SetForegroundColour('#000000'))
         self.makeDayCurveWind.Bind(wx.EVT_LEAVE_WINDOW,
                                    lambda event: self.makeDayCurveWind.SetForegroundColour('#FFFFFF'))
+        self.makeDayCurveVector.Bind(wx.EVT_ENTER_WINDOW,
+                                     lambda event: self.makeDayCurveVector.SetForegroundColour('#000000'))
+        self.makeDayCurveVector.Bind(wx.EVT_LEAVE_WINDOW,
+                                     lambda event: self.makeDayCurveVector.SetForegroundColour('#FFFFFF'))
         self.makeYearCurveTemp.Bind(wx.EVT_ENTER_WINDOW,
                                     lambda event: self.makeYearCurveTemp.SetForegroundColour('#000000'))
         self.makeYearCurveTemp.Bind(wx.EVT_LEAVE_WINDOW,
@@ -112,6 +120,28 @@ class WeatherApp(wx.App):
         firstYear, lastYear = self.__validateYearRange('dayCurve', 'wind')
         self.__plotRawSmooth(firstYear, lastYear, 'windSpeed', True, 1)
 
+    def OnMakeDayCurveVector(self, _):
+
+        firstYear, lastYear = self.__validateYearRange('dayCurve', 'wind')
+        tempArrayX, tempArrayY = DayYearArrayBuilder.makeArray(self.knmiData.array, firstYear, lastYear,
+                                                               'windSpeedVA', 'windDirection')
+
+        xmean = tempArrayX.mean(1)
+        ymean = tempArrayY.mean(1)
+
+        angle = np.zeros(365)
+
+        for index, value in enumerate(xmean):
+            radius = math.sqrt(ymean[index] * ymean[index] + xmean[index] * xmean[index])
+            if ymean[index] > 0:
+                angle[index] = math.atan2(ymean[index] / radius, xmean[index] / radius) / math.pi * 180
+            else:
+                angle[index] = math.atan2(ymean[index] / radius, xmean[index] / radius) / math.pi * 180 + 360
+
+        curve = Curve(angle, 1, firstYear, lastYear)
+        
+        self.plotPanelWind.plot(curve.x, curve.y, curve.ySmooth, True)
+
     def OnMakeYearCurveTemp(self, _):
 
         firstYear, lastYear = self.__validateYearRange('yearCurve', 'temperature')
@@ -119,8 +149,7 @@ class WeatherApp(wx.App):
         self.textOutput.SetLabel('Temperature increase: ' +
                                  str(int((curve.ySmooth[-1] - curve.ySmooth[0]) * 10) / 10) + "°.")
 
-        # The user values from the first and last year text controls is validated.
-
+    # The user values from the first and last year text controls is validated.
     def __validateYearRange(self, curveType: str, page: str) -> Tuple[int, int]:
 
         if page == 'temperature':
@@ -165,8 +194,8 @@ class WeatherApp(wx.App):
 
     def __plotRawSmooth(self, firstYear: int, lastYear: int, columnName: DataColumn, cla: bool, meanAxis: int) -> Curve:
 
-        tempArray = DayYearArrayBuilder.makeArray(self.knmiData.array, firstYear, lastYear, columnName)
-        curve = Curve(tempArray, meanAxis, firstYear, lastYear)
+        tempArray, tempArray2 = DayYearArrayBuilder.makeArray(self.knmiData.array, firstYear, lastYear, columnName)
+        curve = Curve(tempArray.mean(axis=meanAxis), meanAxis, firstYear, lastYear)
         if columnName == 'windSpeed':
             self.plotPanelWind.plot(curve.x, curve.y, curve.ySmooth, cla)
         else:

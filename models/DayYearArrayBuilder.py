@@ -1,13 +1,16 @@
 import numpy as np
 import datetime as dt
+import math
 from models.DataColumn import DataColumn
+from typing import Tuple
 
 
 class DayYearArrayBuilder:
 
     # An array of temperatures per year and per day is made.
     @staticmethod
-    def makeArray(data: np.ndarray, firstYear: int, lastYear: int, columnName: DataColumn) -> np.ndarray:
+    def makeArray(data: np.ndarray, firstYear: int, lastYear: int, columnName: DataColumn,
+                  columnName2: DataColumn = None) -> Tuple[np.ndarray, np.ndarray]:
 
         dates = data[:, 1]
 
@@ -20,6 +23,15 @@ class DayYearArrayBuilder:
 
         # The temperature value is initialized with zeros.
         dayYearArray = np.zeros([365, lastYear - firstYear + 1])
+
+        # The temperature value is initialized with zeros.
+        dayYearArray2 = np.zeros([365, lastYear - firstYear + 1])
+
+        if columnName2 is not None:
+            column2 = data[:, DataColumn[columnName2].value]
+            column2 = column2.astype(float)
+        else:
+            column2 = None
 
         # Looping through all dates and placing the temperatures in tempArray.
         for index, date in enumerate(dates):
@@ -41,6 +53,12 @@ class DayYearArrayBuilder:
             if year % 4 == 0 and days_in_the_year > 59:
                 days_in_the_year -= 1
 
-            dayYearArray[days_in_the_year, year - firstYear] = column[index]
+            if column2 is not None:
+                dayYearArray[days_in_the_year, year - firstYear] = \
+                    column[index] * math.sin(column2[index] / 360 * 2 * math.pi)
+                dayYearArray2[days_in_the_year, year - firstYear] = \
+                    column[index] * math.cos(column2[index] / 360 * 2 * math.pi)
+            else:
+                dayYearArray[days_in_the_year, year - firstYear] = column[index]
 
-        return dayYearArray
+        return dayYearArray, dayYearArray2

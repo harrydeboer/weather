@@ -6,9 +6,8 @@ import datetime as dt
 
 class Curve:
 
-    def __init__(self, tempArray: np.ndarray, meanAxis: int, firstYear: int, lastYear: int):
+    def __init__(self, y: np.ndarray, meanAxis: int, firstYear: int, lastYear: int):
 
-        y = tempArray.mean(axis=meanAxis)
         if meanAxis == 1:
             x = np.arange(1, 366)
         else:
