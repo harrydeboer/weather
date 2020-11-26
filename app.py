@@ -123,22 +123,12 @@ class WeatherApp(wx.App):
     def OnMakeDayCurveVector(self, _):
 
         firstYear, lastYear = self.__validateYearRange('dayCurve', 'wind')
-        tempArrayX, tempArrayY = DayYearArrayBuilder.makeArray(self.knmiData.array, firstYear, lastYear,
-                                                               'windSpeedVA', 'windDirection')
+        speed2D = DayYearArrayBuilder.makeArray(self.knmiData.array, firstYear, lastYear, 'windSpeedVA')
+        angle2D = DayYearArrayBuilder.makeArray(self.knmiData.array, firstYear, lastYear, 'windDirection')
 
-        xmean = tempArrayX.mean(1)
-        ymean = tempArrayY.mean(1)
+        angle = Curve.meanOfAngle(speed2D, angle2D)
 
-        angle = np.zeros(365)
-
-        for index, value in enumerate(xmean):
-            radius = math.sqrt(ymean[index] * ymean[index] + xmean[index] * xmean[index])
-            if ymean[index] > 0:
-                angle[index] = math.atan2(ymean[index] / radius, xmean[index] / radius) / math.pi * 180
-            else:
-                angle[index] = math.atan2(ymean[index] / radius, xmean[index] / radius) / math.pi * 180 + 360
-
-        curve = Curve(angle, 1, firstYear, lastYear)
+        curve = Curve(angle, True, firstYear, lastYear)
         
         self.plotPanelWind.plot(curve.x, curve.y, curve.ySmooth, True)
 
@@ -192,10 +182,12 @@ class WeatherApp(wx.App):
 
         return firstYear, lastYear
 
-    def __plotRawSmooth(self, firstYear: int, lastYear: int, columnName: DataColumn, cla: bool, meanAxis: int) -> Curve:
+    def __plotRawSmooth(self, firstYear: int, lastYear: int,
+                        columnName: DataColumn, cla: bool, isDayCurve: bool) -> Curve:
 
-        tempArray, tempArray2 = DayYearArrayBuilder.makeArray(self.knmiData.array, firstYear, lastYear, columnName)
-        curve = Curve(tempArray.mean(axis=meanAxis), meanAxis, firstYear, lastYear)
+        array = DayYearArrayBuilder.makeArray(self.knmiData.array, firstYear, lastYear, columnName)
+        y = array.mean(axis=1 if isDayCurve else 0)
+        curve = Curve(y, isDayCurve, firstYear, lastYear)
         if columnName == 'windSpeed':
             self.plotPanelWind.plot(curve.x, curve.y, curve.ySmooth, cla)
         else:

@@ -1,37 +1,26 @@
 import numpy as np
 import datetime as dt
-import math
 from models.DataColumn import DataColumn
-from typing import Tuple
 
 
 class DayYearArrayBuilder:
 
     # An array of temperatures per year and per day is made.
     @staticmethod
-    def makeArray(data: np.ndarray, firstYear: int, lastYear: int, columnName: DataColumn,
-                  columnName2: DataColumn = None) -> Tuple[np.ndarray, np.ndarray]:
+    def makeArray(data: np.ndarray, firstYear: int, lastYear: int, columnName: DataColumn) -> np.ndarray:
 
         dates = data[:, 1]
 
         # Three temperature arrays can be made. One for the minimal temperature values,
         # one for the mean temperature values and one for the maximum temperature values.
-        column = data[:, DataColumn[columnName].value]
+        columnNumber, factor = DataColumn[columnName].value
+        column = data[:, columnNumber]
 
         # The KNMI data has temperatures times ten so they have to be divided by 10.
-        column = column.astype(float) / 10
+        column = column.astype(float) / factor
 
         # The temperature value is initialized with zeros.
         dayYearArray = np.zeros([365, lastYear - firstYear + 1])
-
-        # The temperature value is initialized with zeros.
-        dayYearArray2 = np.zeros([365, lastYear - firstYear + 1])
-
-        if columnName2 is not None:
-            column2 = data[:, DataColumn[columnName2].value]
-            column2 = column2.astype(float)
-        else:
-            column2 = None
 
         # Looping through all dates and placing the temperatures in tempArray.
         for index, date in enumerate(dates):
@@ -53,12 +42,6 @@ class DayYearArrayBuilder:
             if year % 4 == 0 and days_in_the_year > 59:
                 days_in_the_year -= 1
 
-            if column2 is not None:
-                dayYearArray[days_in_the_year, year - firstYear] = \
-                    column[index] * math.sin(column2[index] / 360 * 2 * math.pi)
-                dayYearArray2[days_in_the_year, year - firstYear] = \
-                    column[index] * math.cos(column2[index] / 360 * 2 * math.pi)
-            else:
-                dayYearArray[days_in_the_year, year - firstYear] = column[index]
+            dayYearArray[days_in_the_year, year - firstYear] = column[index]
 
-        return dayYearArray, dayYearArray2
+        return dayYearArray
