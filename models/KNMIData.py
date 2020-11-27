@@ -10,23 +10,27 @@ class KNMIData:
         txtList = list()
         with open('data/KNMI.txt', newline='') as inputfile:
             reader = csv.reader(inputfile)
+            lastGoodRow = None
             for row in reader:
+
+                # The first few rows are comments starting with a #.
                 if row[0][0] == '#':
                     continue
-                # elif row[1] == '19450401':
-                #     jan = 1
-                elif len(row) > 10 and row[4] == '     ':
-                    newlist = ['0'] * len(row)
-                    newlist[0] = row[0]
+
+                # During april 1945 a lot of data is not available. 31 march data is put over all days of april.
+                elif len(row) > 10 and row[4] == '     ' and row[1][:6] == '194504':
+                    if lastGoodRow is None:
+                        lastGoodRow = txtList[-1:][0]
+                    newlist = lastGoodRow
                     newlist[1] = row[1]
                     txtList.append(newlist)
+
                 else:
                     txtList.append(row)
 
         self.array = np.asarray(txtList)
 
-        # Remove the days of the first year if it is not complete.
-        yearToDelete = None
+        # Remove the days of the first years until all data is available.
         for index, row in enumerate(self.array):
 
             year = int(row[1][:4])
