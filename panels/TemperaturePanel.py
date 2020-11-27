@@ -1,12 +1,12 @@
 import wx
 import wx.xrc as xrc
-from panels.MainPanel import MainPanel
+from panels.PagePanel import PagePanel
 
 
-class TemperaturePanel(MainPanel):
+class TemperaturePanel(PagePanel):
 
-    def __init__(self, parent):
-        super().__init__(parent)
+    def __init__(self, parent, knmiData):
+        super().__init__(parent, knmiData)
 
         # The textOutput shows the first day of summer or the temperature increase.
         self.textOutput = xrc.XRCCTRL(parent, 'textOutput')

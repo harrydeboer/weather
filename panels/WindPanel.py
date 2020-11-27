@@ -1,15 +1,15 @@
 import wx
 import wx.xrc as xrc
-from panels.MainPanel import MainPanel
-from models.DayYearArrayBuilder import DayYearArrayBuilder
+from panels.PagePanel import PagePanel
+from services.DateArrayBuildService import DateArrayBuildService
 from models.Curve import Curve
 
 
-class WindPanel(MainPanel):
+class WindPanel(PagePanel):
 
-    def __init__(self, parent):
+    def __init__(self, parent, knmiData):
 
-        super().__init__(parent)
+        super().__init__(parent, knmiData)
 
         # The makeDayCurveSpeed and makeDayCurveDirection button click events are bound to callbacks.
         self.makeDayCurveSpeed = xrc.XRCCTRL(parent, "makeDayCurveSpeed")
@@ -36,8 +36,8 @@ class WindPanel(MainPanel):
     def OnMakeDayCurveVector(self, _):
 
         firstYear, lastYear = self._validateYearRange('dayCurve', 'wind')
-        speed2D = DayYearArrayBuilder.makeArray(self.knmiData.array, firstYear, lastYear, 'windSpeedVA')
-        angle2D = DayYearArrayBuilder.makeArray(self.knmiData.array, firstYear, lastYear, 'windDirection')
+        speed2D = DateArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, 'windSpeedVA')
+        angle2D = DateArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, 'windDirection')
 
         angle = Curve.meanOfAngle(speed2D, angle2D)
 

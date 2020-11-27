@@ -1,23 +1,21 @@
 import wx
 import wx.xrc as xrc
-from models.KNMIData import KNMIData
 from typing import Tuple
-from models.DayYearArrayBuilder import DayYearArrayBuilder
+from services.DateArrayBuildService import DateArrayBuildService
 from models.Curve import Curve
 from models.DataColumn import DataColumn
 from panels.PlotPanel import PlotPanel
 
 
-class MainPanel(wx.Panel):
+class PagePanel(wx.Panel):
 
-    def __init__(self, parent):
+    def __init__(self, parent, knmiData):
 
         wx.Panel.__init__(self, parent, -1)
 
-        # The data is read by instantiating the KNMIData class.
-        # The first and last years of the file are retrieved and put in the GUI as initial year range values.
-        self.knmiData = KNMIData()
+        self.knmiData = knmiData
 
+        # The first and last years of the file are retrieved and put in the GUI as initial year range values.
         self.firstYearInput = xrc.XRCCTRL(parent, "firstYear")
         self.firstYearInput.SetValue(self.knmiData.minYearFile)
         self.lastYearInput = xrc.XRCCTRL(parent, "lastYear")
@@ -83,7 +81,7 @@ class MainPanel(wx.Panel):
     def _plotRawSmooth(self, firstYear: int, lastYear: int,
                        columnName: DataColumn, cla: bool, isDayCurve: bool) -> Curve:
 
-        array = DayYearArrayBuilder.makeArray(self.knmiData.array, firstYear, lastYear, columnName)
+        array = DateArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, columnName)
         y = array.mean(axis=1 if isDayCurve else 0)
         curve = Curve(y, isDayCurve, firstYear, lastYear)
         self.plotPanel.plot(curve.x, curve.y, curve.ySmooth, cla)
