@@ -4,8 +4,6 @@ from panels.PlotPanel import PlotPanel
 from models.KNMIData import KNMIData
 from models.DayYearArrayBuilder import DayYearArrayBuilder
 from models.Curve import Curve
-import numpy as np
-import math
 from models.DataColumn import DataColumn
 from typing import Tuple
 import locale
@@ -76,10 +74,10 @@ class WeatherApp(wx.App):
         # The makeDayCurve and makeYearCurve button click events are bound to callbacks.
         self.makeDayCurveTemp = xrc.XRCCTRL(self.pageTemperature, "makeDayCurve")
         self.makeDayCurveTemp.Bind(wx.EVT_BUTTON, self.OnMakeDayCurveTemp)
-        self.makeDayCurveWind = xrc.XRCCTRL(self.pageWind, "makeDayCurve")
-        self.makeDayCurveWind.Bind(wx.EVT_BUTTON, self.OnMakeDayCurveWind)
-        self.makeDayCurveVector = xrc.XRCCTRL(self.pageWind, "makeDayCurveVector")
-        self.makeDayCurveVector.Bind(wx.EVT_BUTTON, self.OnMakeDayCurveVector)
+        self.makeDayCurveSpeed = xrc.XRCCTRL(self.pageWind, "makeDayCurveSpeed")
+        self.makeDayCurveSpeed.Bind(wx.EVT_BUTTON, self.OnMakeDayCurveWind)
+        self.makeDayCurveDirection = xrc.XRCCTRL(self.pageWind, "makeDayCurveDirection")
+        self.makeDayCurveDirection.Bind(wx.EVT_BUTTON, self.OnMakeDayCurveVector)
         self.makeYearCurveTemp = xrc.XRCCTRL(self.pageTemperature, "makeYearCurve")
         self.makeYearCurveTemp.Bind(wx.EVT_BUTTON, self.OnMakeYearCurveTemp)
 
@@ -89,14 +87,14 @@ class WeatherApp(wx.App):
                                    lambda event: self.makeDayCurveTemp.SetForegroundColour('#000000'))
         self.makeDayCurveTemp.Bind(wx.EVT_LEAVE_WINDOW,
                                    lambda event: self.makeDayCurveTemp.SetForegroundColour('#FFFFFF'))
-        self.makeDayCurveWind.Bind(wx.EVT_ENTER_WINDOW,
-                                   lambda event: self.makeDayCurveWind.SetForegroundColour('#000000'))
-        self.makeDayCurveWind.Bind(wx.EVT_LEAVE_WINDOW,
-                                   lambda event: self.makeDayCurveWind.SetForegroundColour('#FFFFFF'))
-        self.makeDayCurveVector.Bind(wx.EVT_ENTER_WINDOW,
-                                     lambda event: self.makeDayCurveVector.SetForegroundColour('#000000'))
-        self.makeDayCurveVector.Bind(wx.EVT_LEAVE_WINDOW,
-                                     lambda event: self.makeDayCurveVector.SetForegroundColour('#FFFFFF'))
+        self.makeDayCurveSpeed.Bind(wx.EVT_ENTER_WINDOW,
+                                    lambda event: self.makeDayCurveSpeed.SetForegroundColour('#000000'))
+        self.makeDayCurveSpeed.Bind(wx.EVT_LEAVE_WINDOW,
+                                    lambda event: self.makeDayCurveSpeed.SetForegroundColour('#FFFFFF'))
+        self.makeDayCurveDirection.Bind(wx.EVT_ENTER_WINDOW,
+                                        lambda event: self.makeDayCurveDirection.SetForegroundColour('#000000'))
+        self.makeDayCurveDirection.Bind(wx.EVT_LEAVE_WINDOW,
+                                        lambda event: self.makeDayCurveDirection.SetForegroundColour('#FFFFFF'))
         self.makeYearCurveTemp.Bind(wx.EVT_ENTER_WINDOW,
                                     lambda event: self.makeYearCurveTemp.SetForegroundColour('#000000'))
         self.makeYearCurveTemp.Bind(wx.EVT_LEAVE_WINDOW,
@@ -109,16 +107,16 @@ class WeatherApp(wx.App):
     def OnMakeDayCurveTemp(self, _):
 
         firstYear, lastYear = self.__validateYearRange('dayCurve', 'temperature')
-        self.__plotRawSmooth(firstYear, lastYear, 'minTemp', True, 1)
-        curve = self.__plotRawSmooth(firstYear, lastYear, 'meanTemp', False, 1)
+        self.__plotRawSmooth(firstYear, lastYear, 'minTemp', True, True)
+        curve = self.__plotRawSmooth(firstYear, lastYear, 'meanTemp', False, True)
         firstDate = curve.getFirstDateSummer()
-        self.__plotRawSmooth(firstYear, lastYear, 'maxTemp', False, 1)
+        self.__plotRawSmooth(firstYear, lastYear, 'maxTemp', False, True)
         self.textOutput.SetLabel('First day of summer: ' + firstDate.strftime("%d %B") + '.')
 
     def OnMakeDayCurveWind(self, _):
 
         firstYear, lastYear = self.__validateYearRange('dayCurve', 'wind')
-        self.__plotRawSmooth(firstYear, lastYear, 'windSpeed', True, 1)
+        self.__plotRawSmooth(firstYear, lastYear, 'windSpeed', True, True)
 
     def OnMakeDayCurveVector(self, _):
 
@@ -129,13 +127,13 @@ class WeatherApp(wx.App):
         angle = Curve.meanOfAngle(speed2D, angle2D)
 
         curve = Curve(angle, True, firstYear, lastYear)
-        
+
         self.plotPanelWind.plot(curve.x, curve.y, curve.ySmooth, True)
 
     def OnMakeYearCurveTemp(self, _):
 
         firstYear, lastYear = self.__validateYearRange('yearCurve', 'temperature')
-        curve = self.__plotRawSmooth(firstYear, lastYear, 'meanTemp', True, 0)
+        curve = self.__plotRawSmooth(firstYear, lastYear, 'meanTemp', True, False)
         self.textOutput.SetLabel('Temperature increase: ' +
                                  str(int((curve.ySmooth[-1] - curve.ySmooth[0]) * 10) / 10) + "°.")
 

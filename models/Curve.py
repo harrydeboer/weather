@@ -1,7 +1,6 @@
 from scipy.signal import savgol_filter
 from numpy.linalg import LinAlgError
 import numpy as np
-import math
 import datetime as dt
 
 
@@ -61,18 +60,22 @@ class Curve:
     @staticmethod
     def meanOfAngle(speed2D: np.ndarray, angle2D: np.ndarray) -> np.ndarray:
 
-        x = speed2D * np.sin(angle2D / 360 * 2 * math.pi)
-        y = speed2D * np.cos(angle2D / 360 * 2 * math.pi)
+        # The KNMI angle starts at 0 (north) and goes clockwise to 360 degrees.
+        # The x and y coordinates are calculated because a mean can only be taken from x and y coordinates.
+        x = speed2D * np.sin(angle2D / 360 * 2 * np.pi)
+        y = speed2D * np.cos(angle2D / 360 * 2 * np.pi)
         xmean = x.mean(1)
         ymean = y.mean(1)
 
         angle = np.zeros(365)
 
         for index, value in enumerate(xmean):
-            radius = math.sqrt(ymean[index] * ymean[index] + xmean[index] * xmean[index])
+            angle[index] = np.arctan2(ymean[index], xmean[index]) / np.pi * 180
 
-            angle[index] = math.atan2(ymean[index] / radius, xmean[index] / radius) / math.pi * 180
-
+            # The arctan2 function start at - Pi (west) and goes counterclockwise to Pi.
+            # The angle starts at 0 (east) and goes to 360.
+            # There is a gap of 2 Pi in the west point and this gap is closed
+            # by adding 360 degrees when y < 0 (y changes sign in the west point).
             if ymean[index] < 0:
                 angle[index] += 360
 

@@ -155,8 +155,8 @@
         <object class="wxBoxSizer">
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
-            <object class="wxButton" name="makeDayCurve">
-              <label>Make day curve</label>
+            <object class="wxButton" name="makeDayCurveSpeed">
+              <label>Make day curve speed</label>
               <fg>#FFFFFF</fg>
               <bg>#00397A</bg>
             </object>
@@ -165,8 +165,8 @@
             <border>2</border>
           </object>
           <object class="sizeritem">
-            <object class="wxButton" name="makeDayCurveVector">
-              <label>Make day curve vector average</label>
+            <object class="wxButton" name="makeDayCurveDirection">
+              <label>Make day curve direction</label>
               <fg>#FFFFFF</fg>
               <bg>#00397A</bg>
             </object>
