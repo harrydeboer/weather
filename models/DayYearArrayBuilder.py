@@ -5,24 +5,20 @@ from models.DataColumn import DataColumn
 
 class DayYearArrayBuilder:
 
-    # An array of temperatures per year and per day is made.
+    # An array of weather values per year and per day is made.
     @staticmethod
     def makeArray(data: np.ndarray, firstYear: int, lastYear: int, columnName: DataColumn) -> np.ndarray:
 
         dates = data[:, 1]
 
-        # Three temperature arrays can be made. One for the minimal temperature values,
-        # one for the mean temperature values and one for the maximum temperature values.
         columnNumber, factor = DataColumn[columnName].value
         column = data[:, columnNumber]
-
-        # The KNMI data has temperatures times ten so they have to be divided by 10.
-        column = column.astype(float) / factor
+        column = column.astype(float) * factor
 
         # The temperature value is initialized with zeros.
         dayYearArray = np.zeros([365, lastYear - firstYear + 1])
 
-        # Looping through all dates and placing the temperatures in tempArray.
+        # Looping through all dates and placing the values in the dayYearArray.
         for index, date in enumerate(dates):
 
             # The csv file has dateformat YYYYMMDD and is split into years, months and days.
