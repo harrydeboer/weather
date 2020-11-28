@@ -35,8 +35,10 @@ class TestCurve(unittest.TestCase):
 
     def testMeanOfAngle(self):
 
-        speed2D = DateArrayBuildService.makeArray(self.knmiData.array, 1904, 2019, 'windSpeedVA')
-        angle2D = DateArrayBuildService.makeArray(self.knmiData.array, 1904, 2019, 'windDirection')
+        firstYear = 1904
+        lastYear = 2019
+        speed2D = DateArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, 'windSpeedVA')
+        angle2D = DateArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, 'windDirection')
         angle = self.curve.meanOfAngle(speed2D, angle2D)
 
         self.assertEqual(angle.size, 365)

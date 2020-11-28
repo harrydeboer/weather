@@ -15,7 +15,7 @@ class DateArrayBuildService:
         column = data[:, columnNumber]
         column = column.astype(float) * factor
 
-        # The temperature value is initialized with zeros.
+        # The date array is initialized with zeros.
         dayYearArray = np.zeros([365, lastYear - firstYear + 1])
 
         # Looping through all dates and placing the values in the dayYearArray.

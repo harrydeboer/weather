@@ -2,7 +2,7 @@ import os
 import unittest
 
 
-# The Run with Python Console checkbox in run config has to be unchecked.
+# The Run with Python Console checkbox in run config has to be unchecked when using PyCharm.
 class UnitTestLauncher(object):
 
     @staticmethod

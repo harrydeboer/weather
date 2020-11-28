@@ -89,7 +89,7 @@ class PagePanel(wx.Panel):
 
         return curve
 
-    # When the mouse hovers over the makeDayCurve and makeYearCurve buttons the button text turns black
+    # When the mouse hovers over the make curve buttons the button text turns black
     # and when the mouse leaves the text is white again.
     @staticmethod
     def _hoverStyleButton(button: StaticText):

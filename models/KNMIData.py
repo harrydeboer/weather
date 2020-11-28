@@ -35,6 +35,7 @@ class KNMIData:
 
             year = int(row[1][:4])
 
+            # Most data is available from 1904 and onwards.
             if year == 1904:
                 self.array = self.array[index:]
                 break

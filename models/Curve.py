@@ -21,7 +21,7 @@ class Curve:
         window = max(5, window)
 
         # If isTriple the smooth curve is made over three times the original array.
-        # That way the endpoints of the in between array match.
+        # That way the endpoints of the inbetween array match.
         if isDayCurve == 1:
             ySmooth = self.__makeSmoothCurve(np.append(y, [y, y]), window)
         else:
@@ -72,7 +72,7 @@ class Curve:
         for index, value in enumerate(xmean):
             angle[index] = np.arctan2(ymean[index], xmean[index]) / np.pi * 180
 
-            # The arctan2 function start at - Pi (west) and goes counterclockwise to Pi.
+            # The arctan2 function start at -Pi (west) and goes counterclockwise to Pi.
             # The angle starts at 0 (east) and goes to 360.
             # There is a gap of 2 Pi in the west point and this gap is closed
             # by adding 360 degrees when y < 0 (y changes sign in the west point).

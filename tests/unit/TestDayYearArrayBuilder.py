@@ -9,7 +9,7 @@ class TestDayYearArrayBuilder(unittest.TestCase):
 
         firstYear = 1904
         lastYear = 2019
-        csvReader = KNMIData()
-        tempArray = DateArrayBuildService.makeArray(csvReader.array, firstYear, lastYear, 'meanTemp')
+        knmiData = KNMIData()
+        tempArray = DateArrayBuildService.makeArray(knmiData.array, firstYear, lastYear, 'meanTemp')
 
         self.assertEqual(tempArray.shape, (365, lastYear - firstYear + 1))

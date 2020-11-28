@@ -12,15 +12,18 @@ class WeatherApp(wx.App):
 
         super().__init__()
 
-        # The locale is en_GB to set the language on english.
+        # The locale is en_GB. This way the language is english.
         locale.setlocale(locale.LC_ALL, 'en_GB')
 
-        sizer = wx.BoxSizer()
         self.res = xrc.XmlResource('layout/weather.xml')
         self.mainFrame = self.res.LoadFrame(None, 'mainFrame')
         self.mainPanel = xrc.XRCCTRL(self.mainFrame, 'mainPanel')
+
+        sizer = wx.BoxSizer()
         self.mainPanel.SetSizer(sizer)
         self.mainPanel.Layout()
+
+        # Read the KNMI data once. The data is passed to the panels.
         knmiData = KNMIData()
 
         # The notebook gets its pages which gives tabs on the top of the main panel.
