@@ -10,13 +10,13 @@ class TestCurve(unittest.TestCase):
 
     def setUp(self):
 
-        self.firstYear = 1902
+        self.firstYear = 1904
         self.lastYear = 2019
-        csvReader = KNMIData()
-        tempArray = DateArrayBuildService.makeArray(csvReader.array, self.firstYear, self.lastYear, 'meanTemp')
-        self.curve = Curve(tempArray, True, self.firstYear, self.lastYear)
+        self.knmiData = KNMIData()
+        tempArray = DateArrayBuildService.makeArray(self.knmiData.array, self.firstYear, self.lastYear, 'meanTemp')
+        self.curve = Curve(tempArray.mean(axis=1), True, self.firstYear, self.lastYear)
 
-    def testAverTempSmooth(self):
+    def testSmoothCurve(self):
 
         self.assertEqual(self.curve.ySmooth.size, 365)
 
@@ -32,3 +32,11 @@ class TestCurve(unittest.TestCase):
         mean = Curve.getMonthMean(ySmooth, 1, 2019)
 
         self.assertEqual(mean, 1)
+
+    def testMeanOfAngle(self):
+
+        speed2D = DateArrayBuildService.makeArray(self.knmiData.array, 1904, 2019, 'windSpeedVA')
+        angle2D = DateArrayBuildService.makeArray(self.knmiData.array, 1904, 2019, 'windDirection')
+        angle = self.curve.meanOfAngle(speed2D, angle2D)
+
+        self.assertEqual(angle.size, 365)

@@ -16,7 +16,6 @@ class WeatherApp(wx.App):
         locale.setlocale(locale.LC_ALL, 'en_GB')
 
         sizer = wx.BoxSizer()
-
         self.res = xrc.XmlResource('layout/weather.xml')
         self.mainFrame = self.res.LoadFrame(None, 'mainFrame')
         self.mainPanel = xrc.XRCCTRL(self.mainFrame, 'mainPanel')
