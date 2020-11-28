@@ -1,5 +1,6 @@
 import wx
 import wx.xrc as xrc
+from wx.core import StaticText
 from typing import Tuple
 from services.DateArrayBuildService import DateArrayBuildService
 from models.Curve import Curve
@@ -87,3 +88,11 @@ class PagePanel(wx.Panel):
         self.plotPanel.plot(curve.x, curve.y, curve.ySmooth, cla)
 
         return curve
+
+    # When the mouse hovers over the makeDayCurve and makeYearCurve buttons the button text turns black
+    # and when the mouse leaves the text is white again.
+    @staticmethod
+    def _hoverStyleButton(button: StaticText):
+
+        button.Bind(wx.EVT_ENTER_WINDOW, lambda event: button.SetForegroundColour('#000000'))
+        button.Bind(wx.EVT_LEAVE_WINDOW, lambda event: button.SetForegroundColour('#FFFFFF'))
