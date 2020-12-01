@@ -6,6 +6,7 @@ from services.DateArrayBuildService import DateArrayBuildService
 from models.Curve import Curve
 from models.DataColumn import DataColumn
 from panels.PlotPanel import PlotPanel
+from models.ValidatorYears import ValidatorYears
 
 
 class PagePanel(wx.Panel):
@@ -19,8 +20,10 @@ class PagePanel(wx.Panel):
         # The first and last years of the file are retrieved and put in the GUI as initial year range values.
         self.firstYearInput = xrc.XRCCTRL(parent, "firstYear")
         self.firstYearInput.SetValue(self.knmiData.minYearFile)
+        self.firstYearInput.SetValidator(ValidatorYears())
         self.lastYearInput = xrc.XRCCTRL(parent, "lastYear")
         self.lastYearInput.SetValue(self.knmiData.maxYearFile)
+        self.lastYearInput.SetValidator(ValidatorYears())
 
         # The mouseOver shows the mouseover event text of the plot.
         self.mouseOver = xrc.XRCCTRL(parent, 'mouseOver')
@@ -37,26 +40,12 @@ class PagePanel(wx.Panel):
         self.errorMessage = xrc.XRCCTRL(parent, 'errorMessage')
 
     # The user values from the first and last year text controls is validated.
-    def _validateYearRange(self, curveType: str, page: str) -> Tuple[int, int]:
+    def _validateYearRange(self, curveType: str) -> Tuple[int, int]:
 
-        if page == 'temperature':
-            firstYear = self.firstYearInput.GetValue()
-            lastYear = self.lastYearInput.GetValue()
-            errorMessage = self.errorMessage
-        elif page == 'wind':
-            firstYear = self.firstYearInput.GetValue()
-            lastYear = self.lastYearInput.GetValue()
-            errorMessage = self.errorMessage
-        else:
-            raise Exception('Page must be either temperature or wind.')
+        firstYear = int(self.firstYearInput.GetValue())
+        lastYear = int(self.lastYearInput.GetValue())
+        errorMessage = self.errorMessage
 
-        if not firstYear.isdigit() or not lastYear.isdigit():
-            text = 'Year range input cannot be empty, text or negative.'
-            errorMessage.SetLabel(text)
-
-            raise Exception(text)
-
-        firstYear, lastYear = int(firstYear), int(lastYear)
         if lastYear < firstYear:
             text = 'Last year cannot be smaller than first year.'
             errorMessage.SetLabel(text)

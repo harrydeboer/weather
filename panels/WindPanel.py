@@ -22,13 +22,13 @@ class WindPanel(PagePanel):
 
     def OnMakeDayCurveWind(self, _):
 
-        firstYear, lastYear = self._validateYearRange('dayCurve', 'wind')
+        firstYear, lastYear = self._validateYearRange('dayCurve')
 
         self._plotRawSmooth(firstYear, lastYear, 'windSpeed', True, True)
 
     def OnMakeDayCurveVector(self, _):
 
-        firstYear, lastYear = self._validateYearRange('dayCurve', 'wind')
+        firstYear, lastYear = self._validateYearRange('dayCurve')
 
         # The vector average speed and direction are retrieved as a 2 dimensional day year array.
         speed2D = DateArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, 'windSpeedVA')

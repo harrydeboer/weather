@@ -22,7 +22,7 @@ class TemperaturePanel(PagePanel):
 
     def OnMakeDayCurveTemp(self, _):
 
-        firstYear, lastYear = self._validateYearRange('dayCurve', 'temperature')
+        firstYear, lastYear = self._validateYearRange('dayCurve')
 
         self._plotRawSmooth(firstYear, lastYear, 'minTemp', True, True)
         curve = self._plotRawSmooth(firstYear, lastYear, 'meanTemp', False, True)
@@ -32,7 +32,7 @@ class TemperaturePanel(PagePanel):
 
     def OnMakeYearCurveTemp(self, _):
 
-        firstYear, lastYear = self._validateYearRange('yearCurve', 'temperature')
+        firstYear, lastYear = self._validateYearRange('yearCurve')
 
         curve = self._plotRawSmooth(firstYear, lastYear, 'meanTemp', True, False)
 
