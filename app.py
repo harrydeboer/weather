@@ -18,10 +18,10 @@ class WeatherApp(wx.App):
         self.res = xrc.XmlResource('layout/weather.xml')
         self.mainFrame = self.res.LoadFrame(None, 'mainFrame')
         self.mainPanel = xrc.XRCCTRL(self.mainFrame, 'mainPanel')
+        self.topPanel = xrc.XRCCTRL(self.mainFrame, 'topPanel')
 
-        sizer = wx.BoxSizer()
-        self.mainPanel.SetSizer(sizer)
-        self.mainPanel.Layout()
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.topPanel, 0, wx.EXPAND)
 
         # Read the KNMI data once. The data is passed to the panels.
         knmiData = KNMIData()
@@ -34,6 +34,9 @@ class WeatherApp(wx.App):
         self.notebook.AddPage(self.pageTemperature.GetParent(), 'Temperature', True)
         self.notebook.AddPage(self.pageWind.GetParent(), 'Wind', True)
         self.notebook.ChangeSelection(0)
+
+        self.mainPanel.SetSizer(sizer)
+        self.mainPanel.Layout()
 
         self.mainFrame.Show(isShown)
         self.SetTopWindow(self.mainFrame)
