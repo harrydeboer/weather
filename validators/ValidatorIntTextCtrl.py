@@ -2,7 +2,7 @@ import wx
 
 
 # Validates data as it is entered into the first year and last year controls.
-class ValidatorYears(wx.Validator):
+class ValidatorIntTextCtrl(wx.Validator):
 
     def __init__(self):
         wx.Validator.__init__(self)
@@ -10,7 +10,7 @@ class ValidatorYears(wx.Validator):
 
     def Clone(self):
 
-        return ValidatorYears()
+        return ValidatorIntTextCtrl()
 
     def Validate(self, win):
 
@@ -27,7 +27,6 @@ class ValidatorYears(wx.Validator):
     def OnChar(self, event):
 
         keycode = int(event.GetKeyCode())
-        currentValue = self.GetWindow().GetValue()
 
         if keycode < 256:
             key = chr(keycode)
