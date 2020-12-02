@@ -11,7 +11,7 @@ class DateArrayBuildService:
 
         dates = data[:, 1]
 
-        columnNumber, factor = DataColumn[columnName].value
+        columnNumber, factor = columnName.value
         column = data[:, columnNumber]
         column = column.astype(float) * factor
 

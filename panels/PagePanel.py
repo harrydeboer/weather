@@ -1,7 +1,6 @@
 import wx
 import wx.xrc as xrc
 from wx.core import StaticText
-from typing import Tuple
 from services.DateArrayBuildService import DateArrayBuildService
 from models.Curve import Curve
 from models.DataColumn import DataColumn

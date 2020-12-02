@@ -3,6 +3,7 @@ import wx.xrc as xrc
 from panels.PagePanel import PagePanel
 from services.DateArrayBuildService import DateArrayBuildService
 from models.Curve import Curve
+from models.DataColumn import DataColumn
 from validators.ValidatorYears import ValidatorYears
 
 
@@ -14,7 +15,7 @@ class WindPanel(PagePanel):
 
         # The makeDayCurveSpeed and makeDayCurveDirection button click events are bound to callbacks.
         self.makeDayCurveSpeed = xrc.XRCCTRL(parent, "makeDayCurveSpeed")
-        self.makeDayCurveSpeed.Bind(wx.EVT_BUTTON, self.OnMakeDayCurveWind)
+        self.makeDayCurveSpeed.Bind(wx.EVT_BUTTON, self.OnMakeDayCurveSpeed)
         self.makeDayCurveSpeed.SetValidator(ValidatorYears(True, self.firstYear, self.lastYear, self.errorMessage))
 
         self.makeDayCurveDirection = xrc.XRCCTRL(parent, "makeDayCurveDirection")
@@ -24,9 +25,9 @@ class WindPanel(PagePanel):
         self._hoverStyleButton(self.makeDayCurveSpeed)
         self._hoverStyleButton(self.makeDayCurveDirection)
 
-    def OnMakeDayCurveWind(self, _):
+    def OnMakeDayCurveSpeed(self, _):
 
-        self._plotRawSmooth(int(self.firstYear.GetValue()), int(self.lastYear.GetValue()), 'windSpeed', True, True)
+        self._plotRawSmooth(int(self.firstYear.GetValue()), int(self.lastYear.GetValue()), DataColumn.windSpeed, True, True)
 
     def OnMakeDayCurveVector(self, _):
 
@@ -34,8 +35,8 @@ class WindPanel(PagePanel):
         lastYear = int(self.lastYear.GetValue())
 
         # The vector average speed and direction are retrieved as a 2 dimensional day year array.
-        speed2D = DateArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, 'windSpeedVA')
-        angle2D = DateArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, 'windDirection')
+        speed2D = DateArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, DataColumn.windSpeedVA)
+        angle2D = DateArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, DataColumn.windDirection)
 
         # The 2 dimensional angle and speed are averaged over the years.
         angle = Curve.meanOfAngle(speed2D, angle2D)

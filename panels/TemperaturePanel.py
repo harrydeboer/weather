@@ -2,6 +2,7 @@ import wx
 import wx.xrc as xrc
 from panels.PagePanel import PagePanel
 from validators.ValidatorYears import ValidatorYears
+from models.DataColumn import DataColumn
 
 
 class TemperaturePanel(PagePanel):
@@ -29,16 +30,16 @@ class TemperaturePanel(PagePanel):
         firstYear = int(self.firstYear.GetValue())
         lastYear = int(self.lastYear.GetValue())
 
-        self._plotRawSmooth(firstYear, lastYear, 'minTemp', True, True)
-        curve = self._plotRawSmooth(firstYear, lastYear, 'meanTemp', False, True)
-        self._plotRawSmooth(firstYear, lastYear, 'maxTemp', False, True)
+        self._plotRawSmooth(firstYear, lastYear, DataColumn.minTemp, True, True)
+        curve = self._plotRawSmooth(firstYear, lastYear, DataColumn.meanTemp, False, True)
+        self._plotRawSmooth(firstYear, lastYear, DataColumn.maxTemp, False, True)
 
         self.textOutput.SetLabel('First day of summer: ' + curve.getFirstDateSummer().strftime("%d %B") + '.')
 
     def OnMakeYearCurveTemp(self, _):
 
         curve = self._plotRawSmooth(int(self.firstYear.GetValue()), int(self.lastYear.GetValue()),
-                                    'meanTemp', True, False)
+                                    DataColumn.meanTemp, True, False)
 
         self.textOutput.SetLabel('Temperature increase: ' +
                                  str(int((curve.ySmooth[-1] - curve.ySmooth[0]) * 10) / 10) + "°.")

@@ -24,7 +24,8 @@ class ValidatorIntTextCtrl(wx.Validator):
 
         return True
 
-    def OnChar(self, event):
+    @staticmethod
+    def OnChar(event):
 
         keycode = int(event.GetKeyCode())
 
