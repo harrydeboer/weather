@@ -31,4 +31,5 @@ class RainPanel(PagePanel):
 
     def OnMakeDayCurvePercentage(self, _):
 
-        jan = 1
+        self._plotRawSmooth(int(self.firstYear.GetValue()), int(self.lastYear.GetValue()), DataColumn.percRain,
+                            True, True)

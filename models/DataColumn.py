@@ -12,5 +12,5 @@ class DataColumn(Enum):
     windSpeedVA = (3, 0.1)
     windSpeed = (4, 0.1)
     percSunshine = (19, 1)
-    durationRain = (21, 0.1)
+    percRain = (21, 0.416666666666)
     amountRain = (22, 0.1)
