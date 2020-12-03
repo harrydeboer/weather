@@ -60,4 +60,6 @@ class ValidatorYears(wx.Validator):
 
             return
 
+        self.errorMessage.SetLabel('')
+
         event.Skip()
