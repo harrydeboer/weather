@@ -287,9 +287,85 @@
         </object>
       </object>
       <object class="sizeritem">
-        <object class="wxStaticText" name="textOutput">
-          <fg>#FFFFFF</fg>
+        <object class="wxStaticText" name="errorMessage">
+          <fg>#FF0000</fg>
           <label></label>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <object class="wxPanel" name="plotContainerPanel"/>
+        <option>1</option>
+        <flag>wxEXPAND</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText" name="mouseOver">
+          <fg>#FFFFFF</fg>
+          <label>Mouse over curve: &#10;</label>
+        </object>
+      </object>
+    </object>
+  </object>
+  <object class="wxPanel" name="rain">
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="makeDayCurveAmount">
+              <label>Make day curve amount</label>
+              <fg>#FFFFFF</fg>
+              <bg>#00397A</bg>
+            </object>
+            <option>0</option>
+            <flag>wxALL|wxEXPAND</flag>
+            <border>2</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="makeDayCurvePercentage">
+              <label>Make day curve percentage</label>
+              <fg>#FFFFFF</fg>
+              <bg>#00397A</bg>
+            </object>
+            <option>0</option>
+            <flag>wxALL|wxEXPAND</flag>
+            <border>2</border>
+          </object>
+        </object>
+        <option>0</option>
+        <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <border>5</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>First year: </label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxTextCtrl" name="firstYear">
+              <value></value>
+            </object>
+            <option>0</option>
+          </object>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Last year: </label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxTextCtrl" name="lastYear">
+              <value></value>
+            </object>
+            <option>0</option>
+          </object>
         </object>
       </object>
       <object class="sizeritem">

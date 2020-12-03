@@ -18,7 +18,10 @@ class PagePanel(wx.Panel):
 
         # The first and last years of the file are retrieved and put in the GUI as initial year range values.
         self.firstYear = xrc.XRCCTRL(parent, "firstYear")
-        self.firstYear.SetValue(self.knmiData.minYearFile)
+        if type(self).__name__ == 'RainPanel':
+            self.firstYear.SetValue('1930')
+        else:
+            self.firstYear.SetValue(self.knmiData.minYearFile)
         self.firstYear.SetValidator(ValidatorIntTextCtrl())
         self.lastYear = xrc.XRCCTRL(parent, "lastYear")
         self.lastYear.SetValue(self.knmiData.maxYearFile)

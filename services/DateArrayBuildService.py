@@ -13,7 +13,6 @@ class DateArrayBuildService:
 
         columnNumber, factor = columnName.value
         column = data[:, columnNumber]
-        column = column.astype(float) * factor
 
         # The date array is initialized with zeros.
         dayYearArray = np.zeros([365, lastYear - firstYear + 1])
@@ -38,6 +37,6 @@ class DateArrayBuildService:
             if year % 4 == 0 and days_in_the_year > 59:
                 days_in_the_year -= 1
 
-            dayYearArray[days_in_the_year, year - firstYear] = column[index]
+            dayYearArray[days_in_the_year, year - firstYear] = float(column[index]) * factor
 
         return dayYearArray
