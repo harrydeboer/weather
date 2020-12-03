@@ -14,3 +14,13 @@ class TestRainPanel(unittest.TestCase):
         button.ProcessEvent(event)
 
         self.assertEqual(1, 1)
+
+    def testOnMakeDayCurvePercentage(self):
+
+        app = WeatherApp(False)
+        event = wx.CommandEvent(wx.wxEVT_COMMAND_BUTTON_CLICKED, wx.ID_OK)
+        button = app.pageRain.makeDayCurvePercentage
+        event.SetEventObject(button)
+        button.ProcessEvent(event)
+
+        self.assertEqual(1, 1)

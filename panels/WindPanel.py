@@ -16,11 +16,11 @@ class WindPanel(PagePanel):
         # The makeDayCurveSpeed and makeDayCurveDirection button click events are bound to callbacks.
         self.makeDayCurveSpeed = xrc.XRCCTRL(parent, "makeDayCurveSpeed")
         self.makeDayCurveSpeed.Bind(wx.EVT_BUTTON, self.OnMakeDayCurveSpeed)
-        self.makeDayCurveSpeed.SetValidator(ValidatorYears(True, self.firstYear, self.lastYear, self.errorMessage))
+        self.makeDayCurveSpeed.SetValidator(ValidatorYears('dayCurve', self.firstYear, self.lastYear, self.errorMessage))
 
         self.makeDayCurveDirection = xrc.XRCCTRL(parent, "makeDayCurveDirection")
         self.makeDayCurveDirection.Bind(wx.EVT_BUTTON, self.OnMakeDayCurveVector)
-        self.makeDayCurveDirection.SetValidator(ValidatorYears(True, self.firstYear, self.lastYear, self.errorMessage))
+        self.makeDayCurveDirection.SetValidator(ValidatorYears('dayCurve', self.firstYear, self.lastYear, self.errorMessage))
 
         self._hoverStyleButton(self.makeDayCurveSpeed)
         self._hoverStyleButton(self.makeDayCurveDirection)

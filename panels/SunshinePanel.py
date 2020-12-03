@@ -14,7 +14,7 @@ class SunshinePanel(PagePanel):
         # The makeDayCurveSpeed and makeDayCurveDirection button click events are bound to callbacks.
         self.makeDayCurve = xrc.XRCCTRL(parent, "makeDayCurve")
         self.makeDayCurve.Bind(wx.EVT_BUTTON, self.OnMakeDayCurve)
-        self.makeDayCurve.SetValidator(ValidatorYears(True, self.firstYear, self.lastYear, self.errorMessage))
+        self.makeDayCurve.SetValidator(ValidatorYears('dayCurve', self.firstYear, self.lastYear, self.errorMessage))
 
         self._hoverStyleButton(self.makeDayCurve)
 
