@@ -2,6 +2,7 @@ import wx
 import wx.xrc as xrc
 from panels.TemperaturePanel import TemperaturePanel
 from panels.WindPanel import WindPanel
+from panels.SunshinePanel import SunshinePanel
 from models.KNMIData import KNMIData
 import locale
 
@@ -31,8 +32,10 @@ class WeatherApp(wx.App):
         sizer.Add(self.notebook, 1, wx.EXPAND)
         self.pageTemperature = TemperaturePanel(self.res.LoadPanel(self.notebook, 'temperature'), knmiData)
         self.pageWind = WindPanel(self.res.LoadPanel(self.notebook, 'wind'), knmiData)
+        self.pageSunshine = SunshinePanel(self.res.LoadPanel(self.notebook, 'sunshine'), knmiData)
         self.notebook.AddPage(self.pageTemperature.GetParent(), 'Temperature', True)
         self.notebook.AddPage(self.pageWind.GetParent(), 'Wind', True)
+        self.notebook.AddPage(self.pageSunshine.GetParent(), 'Sunshine', True)
         self.notebook.ChangeSelection(0)
 
         self.mainPanel.SetSizer(sizer)

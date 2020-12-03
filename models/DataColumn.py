@@ -11,3 +11,4 @@ class DataColumn(Enum):
     windDirection = (2, 1)
     windSpeedVA = (3, 0.1)
     windSpeed = (4, 0.1)
+    percSunshine = (19, 1)
