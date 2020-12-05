@@ -14,7 +14,8 @@ class RainPanel(PagePanel):
         # The makeDayCurveSpeed and makeDayCurveDirection button click events are bound to callbacks.
         self.makeDayCurveAmount = xrc.XRCCTRL(parent, "makeDayCurveAmount")
         self.makeDayCurveAmount.Bind(wx.EVT_BUTTON, self.OnMakeDayCurve)
-        self.makeDayCurveAmount.SetValidator(ValidatorYears('dayCurve', self.firstYear, self.lastYear, self.errorMessage))
+        self.makeDayCurveAmount.SetValidator(ValidatorYears('dayCurve',
+                                                            self.firstYear, self.lastYear, self.errorMessage))
 
         self.makeDayCurvePercentage = xrc.XRCCTRL(parent, "makeDayCurvePercentage")
         self.makeDayCurvePercentage.Bind(wx.EVT_BUTTON, self.OnMakeDayCurvePercentage)

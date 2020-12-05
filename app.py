@@ -4,6 +4,7 @@ from panels.TemperaturePanel import TemperaturePanel
 from panels.WindPanel import WindPanel
 from panels.SunshinePanel import SunshinePanel
 from panels.RainPanel import RainPanel
+from panels.TopPanel import TopPanel
 from models.KNMIData import KNMIData
 import locale
 
@@ -20,7 +21,7 @@ class WeatherApp(wx.App):
         self.res = xrc.XmlResource('layout/weather.xml')
         self.mainFrame = self.res.LoadFrame(None, 'mainFrame')
         self.mainPanel = xrc.XRCCTRL(self.mainFrame, 'mainPanel')
-        self.topPanel = xrc.XRCCTRL(self.mainFrame, 'topPanel')
+        self.topPanel = TopPanel(self.mainPanel)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.topPanel, 0, wx.EXPAND)
