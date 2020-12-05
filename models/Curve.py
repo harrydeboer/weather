@@ -13,35 +13,27 @@ class Curve:
         else:
             x = np.arange(firstYear, lastYear + 1)
 
-        # The Savitzky-Golay filter needs an odd valued window.
-        # The window is one third the size of the curve and then made an odd integer.
-        window = int(y.size / 3)
-        if window % 2 == 0:
-            window += 1
-        window = max(5, window)
-
-        # If isTriple the smooth curve is made over three times the original array.
-        # That way the endpoints of the inbetween array match.
-        if isDayCurve == 1:
-            ySmooth = self.__makeSmoothCurve(np.append(y, [y, y]), window)
-        else:
-            ySmooth = self.__makeSmoothCurve(y, window)
-
         self.x = x
-        self.y = y
+        boxPoints = 30
+
+        # If isDayCurve the smooth curve is made over three times the original array.
+        # That way the endpoints of the inbetween array match. For the year curve the reverse curve is added.
         if isDayCurve == 1:
-            self.ySmooth = ySmooth[365:730]
+            ySmooth = self.__makeSmoothCurve(np.append(y, [y, y]), boxPoints)
         else:
-            self.ySmooth = ySmooth
+            yReverse = np.asarray(list(reversed(y)))
+            ySmooth = self.__makeSmoothCurve(np.append(yReverse, [y, yReverse]), boxPoints)
 
-    # The Savitzky-Golay savgol_filter function does not always work right away.
-    # The same input is given untill there is no exception.
-    def __makeSmoothCurve(self, y, window) -> np.ndarray:
+        self.y = y
 
-        try:
-            result = savgol_filter(y, window, 3)
-        except LinAlgError:
-            result = self.__makeSmoothCurve(y, window)
+        length = int(ySmooth.size / 3)
+        self.ySmooth = ySmooth[length: 2 * length]
+
+    @staticmethod
+    def __makeSmoothCurve(y, boxPoints) -> np.ndarray:
+
+        box = np.ones(boxPoints) / boxPoints
+        result = np.convolve(y, box, mode='same')
 
         return result
 
