@@ -3,7 +3,7 @@ import datetime as dt
 from models.DataColumn import DataColumn
 
 
-class DateArrayBuildService:
+class DayYearArrayBuildService:
 
     # An array of weather values per year and per day is made.
     @staticmethod

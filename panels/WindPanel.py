@@ -1,7 +1,7 @@
 import wx
 import wx.xrc as xrc
 from panels.PagePanel import PagePanel
-from services.DateArrayBuildService import DateArrayBuildService
+from services.DayYearArrayBuildService import DayYearArrayBuildService
 from models.Curve import Curve
 from models.DataColumn import DataColumn
 from validators.ValidatorYears import ValidatorYears
@@ -35,8 +35,8 @@ class WindPanel(PagePanel):
         lastYear = int(self.lastYear.GetValue())
 
         # The vector average speed and direction are retrieved as a 2 dimensional day year array.
-        speed2D = DateArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, DataColumn.windSpeedVA)
-        angle2D = DateArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, DataColumn.windDirection)
+        speed2D = DayYearArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, DataColumn.windSpeedVA)
+        angle2D = DayYearArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, DataColumn.windDirection)
 
         # The 2 dimensional angle and speed are averaged over the years.
         angle = Curve.meanOfAngle(speed2D, angle2D)

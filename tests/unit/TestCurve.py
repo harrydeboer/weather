@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 import datetime as datetime
-from services.DateArrayBuildService import DateArrayBuildService
+from services.DayYearArrayBuildService import DayYearArrayBuildService
 from models.KNMIData import KNMIData
 from models.Curve import Curve
 from models.DataColumn import DataColumn
@@ -14,7 +14,7 @@ class TestCurve(unittest.TestCase):
         self.firstYear = 1904
         self.lastYear = 2019
         self.knmiData = KNMIData()
-        tempArray = DateArrayBuildService.makeArray(self.knmiData.array,
+        tempArray = DayYearArrayBuildService.makeArray(self.knmiData.array,
                                                     self.firstYear, self.lastYear, DataColumn.meanTemp)
         self.curve = Curve(tempArray.mean(axis=1), True, self.firstYear, self.lastYear)
 
@@ -39,8 +39,8 @@ class TestCurve(unittest.TestCase):
 
         firstYear = 1904
         lastYear = 2019
-        speed2D = DateArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, DataColumn.windSpeedVA)
-        angle2D = DateArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, DataColumn.windDirection)
+        speed2D = DayYearArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, DataColumn.windSpeedVA)
+        angle2D = DayYearArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, DataColumn.windDirection)
         angle = self.curve.meanOfAngle(speed2D, angle2D)
 
         self.assertEqual(angle.size, 365)

@@ -1,7 +1,7 @@
 import wx
 import wx.xrc as xrc
 from wx.core import StaticText
-from services.DateArrayBuildService import DateArrayBuildService
+from services.DayYearArrayBuildService import DayYearArrayBuildService
 from models.Curve import Curve
 from models.DataColumn import DataColumn
 from panels.PlotPanel import PlotPanel
@@ -41,7 +41,7 @@ class PagePanel(wx.Panel):
     def _plotRawSmooth(self, firstYear: int, lastYear: int,
                        columnName: DataColumn, cla: bool, isDayCurve: bool) -> Curve:
 
-        array = DateArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, columnName)
+        array = DayYearArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, columnName)
         y = array.mean(axis=1 if isDayCurve else 0)
         curve = Curve(y, isDayCurve, firstYear, lastYear)
         self.plotPanel.plot(curve.x, curve.y, curve.ySmooth, cla)
