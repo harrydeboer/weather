@@ -1,5 +1,3 @@
-from scipy.signal import savgol_filter
-from numpy.linalg import LinAlgError
 import numpy as np
 import datetime as dt
 
@@ -8,7 +6,7 @@ class Curve:
 
     def __init__(self, y: np.ndarray, isDayCurve: bool, firstYear: int, lastYear: int):
 
-        if isDayCurve == 1:
+        if isDayCurve:
             x = np.arange(1, 366)
         else:
             x = np.arange(firstYear, lastYear + 1)
@@ -18,16 +16,18 @@ class Curve:
 
         # If isDayCurve the smooth curve is made over three times the original array.
         # That way the endpoints of the inbetween array match. For the year curve the reverse curve is added.
-        if isDayCurve == 1:
+        if isDayCurve:
             ySmooth = self.__makeSmoothCurve(np.append(y, [y, y]), boxPoints)
         else:
-            yReverse = np.asarray(list(reversed(y)))
-            ySmooth = self.__makeSmoothCurve(np.append(yReverse, [y, yReverse]), boxPoints)
+            ySmooth = self.__makeSmoothCurveLinearExtrapolate(y, boxPoints)
 
         self.y = y
 
-        length = int(ySmooth.size / 3)
-        self.ySmooth = ySmooth[length: 2 * length]
+        if isDayCurve:
+            length = int(ySmooth.size / 3)
+            self.ySmooth = ySmooth[length: 2 * length]
+        else:
+            self.ySmooth = ySmooth
 
     @staticmethod
     def __makeSmoothCurve(y, boxPoints) -> np.ndarray:
@@ -36,6 +36,41 @@ class Curve:
         result = np.convolve(y, box, mode='same')
 
         return result
+
+    # A moving average is used to smooth the curve. At the edges the data is extrapolated linearly with a regression.
+    # That way the smoothing behaves well at the edges.
+    @classmethod
+    def __makeSmoothCurveLinearExtrapolate(cls, y, boxPoints) -> np.ndarray:
+
+        yregress = y[:boxPoints]
+        xregress = np.arange(0, boxPoints)
+
+        alpha, beta = cls.__calculateAlphaBeta(yregress, xregress)
+
+        yprepend = np.arange(boxPoints * (-1), 0) * beta + alpha
+
+        yregress = y[-boxPoints:]
+        xregress = np.arange(y.size - boxPoints, y.size)
+
+        alpha, beta = cls.__calculateAlphaBeta(yregress, xregress)
+
+        yappend = np.arange(y.size, y.size + boxPoints) * beta + alpha
+
+        box = np.ones(boxPoints) / boxPoints
+        result = np.convolve(np.append(np.append(yprepend, y), yappend), box, mode='same')
+
+        return result[boxPoints:-boxPoints]
+
+    @staticmethod
+    def __calculateAlphaBeta(yregress: np.ndarray, xregress: np.ndarray):
+
+        ymean = yregress.mean()
+        xmean = xregress.mean()
+
+        beta = np.sum((xregress - xmean) * (yregress - ymean)) / np.sum((xregress - xmean) * (xregress - xmean))
+        alpha = ymean - beta * xmean
+
+        return alpha, beta
 
     # The first day of summer is the point where the temperature is equal to the temperature 92 days later.
     # On average a season has 92 days. The smooth curves are substracted with 92 days interval.

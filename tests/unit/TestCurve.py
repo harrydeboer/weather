@@ -17,10 +17,15 @@ class TestCurve(unittest.TestCase):
         tempArray = DayYearArrayBuildService.makeArray(self.knmiData.array,
                                                     self.firstYear, self.lastYear, DataColumn.meanTemp)
         self.curve = Curve(tempArray.mean(axis=1), True, self.firstYear, self.lastYear)
+        self.curveLinExtrapolate = Curve(tempArray.mean(axis=0), False, self.firstYear, self.lastYear)
 
     def testSmoothCurve(self):
 
         self.assertEqual(self.curve.ySmooth.size, 365)
+
+    def testSmoothCurveLinExtrapolate(self):
+
+        self.assertEqual(self.curveLinExtrapolate.ySmooth.size, self.lastYear - self.firstYear + 1)
 
     def testFirstDateSummer(self):
 
