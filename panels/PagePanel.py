@@ -49,8 +49,10 @@ class PagePanel(wx.Panel):
     def _addToPage(self, sizer: wx.Sizer):
 
         sizerGrid = wx.GridSizer(2, 2, 10, 10)
-        labelFirstYear = wx.StaticText(self, -1, 'First year: ')
-        labelLastYear = wx.StaticText(self, -1, 'Last year: ')
+        labelFirstYear = wx.StaticText(self, -1, ' First year: ')
+        labelFirstYear.SetForegroundColour('#FFFFFF')
+        labelLastYear = wx.StaticText(self, -1, ' Last year: ')
+        labelLastYear.SetForegroundColour('#FFFFFF')
         sizerGrid.Add(labelFirstYear)
         sizerGrid.Add(self.firstYear)
         sizerGrid.Add(labelLastYear)
