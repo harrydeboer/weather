@@ -54,5 +54,5 @@ class KNMIData:
                 break
 
         dates = self.array[:, 1]
-        self.minYearFile = dates[1][:4]
-        self.maxYearFile = dates[-1][:4]
+        self.minYearFile = int(dates[1][:4])
+        self.maxYearFile = int(dates[-1][:4])

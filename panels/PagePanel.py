@@ -6,6 +6,8 @@ from models.Curve import Curve
 from models.DataColumn import DataColumn
 from panels.PlotPanel import PlotPanel
 from validators.ValidatorIntTextCtrl import ValidatorIntTextCtrl
+from wx import lib
+from wx.lib import intctrl
 
 
 class PagePanel(wx.Panel):
@@ -17,26 +19,24 @@ class PagePanel(wx.Panel):
         self.knmiData = knmiData
 
         # The first and last years of the file are retrieved and put in the GUI as initial year range values.
-        self.firstYear = xrc.XRCCTRL(parent, "firstYear")
+        self.firstYear = wx.lib.intctrl.IntCtrl(self)
         self.firstYear.SetValue(self.knmiData.minYearFile)
         self.firstYear.SetValidator(ValidatorIntTextCtrl())
-        self.lastYear = xrc.XRCCTRL(parent, "lastYear")
+        self.lastYear = wx.lib.intctrl.IntCtrl(self)
         self.lastYear.SetValue(self.knmiData.maxYearFile)
         self.lastYear.SetValidator(ValidatorIntTextCtrl())
 
         # The mouseOver shows the mouseover event text of the plot.
-        self.mouseOver = xrc.XRCCTRL(parent, 'mouseOver')
+        self.mouseOver = wx.StaticText(self, -1, "Mouse over curve: \n")
+        self.mouseOver.SetForegroundColour('#FFFFFF')
 
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        plotContainerPanel = xrc.XRCCTRL(parent, "plotContainerPanel")
-        self.plotPanel = PlotPanel(plotContainerPanel)
+        self.plotPanel = PlotPanel(self)
         self.plotPanel.fig.canvas.mpl_connect(
             'motion_notify_event', lambda event: self.plotPanel.onPlotHover(event, self.mouseOver))
 
-        sizer.Add(self.plotPanel, 1, wx.EXPAND)
-        plotContainerPanel.SetSizer(sizer)
-
-        self.errorMessage = xrc.XRCCTRL(parent, 'errorMessage')
+        self.errorMessage = wx.StaticText(self, -1, '')
+        self.errorMessage.SetForegroundColour('#FF0000')
+        self.errorMessage.SetBackgroundColour('#FFFFFF')
 
     def _plotRawSmooth(self, firstYear: int, lastYear: int,
                        columnName: DataColumn, cla: bool, isDayCurve: bool) -> Curve:
@@ -48,10 +48,23 @@ class PagePanel(wx.Panel):
 
         return curve
 
+    def _addToPage(self, sizer: wx.Sizer):
+
+        sizer.Add(self.firstYear)
+        sizer.Add(self.lastYear)
+        sizer.Add(self.errorMessage)
+        sizer.Add(self.plotPanel)
+        sizer.Add(self.mouseOver)
+
+        self.SetSizer(sizer)
+        self.Layout()
+
     # When the mouse hovers over the make curve buttons the button text turns black
     # and when the mouse leaves the text is white again.
     @staticmethod
-    def _hoverStyleButton(button: StaticText):
+    def _hoverStyleButton(button: wx.Button):
 
+        button.SetForegroundColour('#FFFFFF')
+        button.SetBackgroundColour('#00397A')
         button.Bind(wx.EVT_ENTER_WINDOW, lambda event: button.SetForegroundColour('#000000'))
         button.Bind(wx.EVT_LEAVE_WINDOW, lambda event: button.SetForegroundColour('#FFFFFF'))

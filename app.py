@@ -1,5 +1,4 @@
 import wx
-import wx.xrc as xrc
 from panels.TemperaturePanel import TemperaturePanel
 from panels.WindPanel import WindPanel
 from panels.SunshinePanel import SunshinePanel
@@ -18,9 +17,10 @@ class WeatherApp(wx.App):
         # The locale is en_GB. This way the language is english.
         locale.setlocale(locale.LC_ALL, 'en_GB')
 
-        self.res = xrc.XmlResource('layout/weather.xml')
-        self.mainFrame = self.res.LoadFrame(None, 'mainFrame')
-        self.mainPanel = xrc.XRCCTRL(self.mainFrame, 'mainPanel')
+        self.mainFrame = wx.Frame(None, wx.ID_ANY, 'Weather', size=(550, 700))
+        self.mainPanel = wx.Panel(self.mainFrame)
+        self.mainPanel.SetBackgroundColour('#1C6CBC')
+        self.mainPanel.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.topPanel = TopPanel(self.mainPanel)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -29,17 +29,17 @@ class WeatherApp(wx.App):
         # Read the KNMI data once. The data is passed to the panels.
         knmiData = KNMIData()
 
-        # The notebook gets its pages which gives tabs on the top of the main panel.
-        self.notebook = xrc.XRCCTRL(self.mainPanel, 'notebook')
+        # The notebook is initialized and the pages are added.
+        self.notebook = wx.Notebook(self.mainPanel)
         sizer.Add(self.notebook, 1, wx.EXPAND)
-        self.pageTemperature = TemperaturePanel(self.res.LoadPanel(self.notebook, 'temperature'), knmiData)
-        self.pageWind = WindPanel(self.res.LoadPanel(self.notebook, 'wind'), knmiData)
-        self.pageSunshine = SunshinePanel(self.res.LoadPanel(self.notebook, 'sunshine'), knmiData)
-        self.pageRain = RainPanel(self.res.LoadPanel(self.notebook, 'rain'), knmiData)
-        self.notebook.AddPage(self.pageTemperature.GetParent(), 'Temperature', True)
-        self.notebook.AddPage(self.pageWind.GetParent(), 'Wind', True)
-        self.notebook.AddPage(self.pageSunshine.GetParent(), 'Sunshine', True)
-        self.notebook.AddPage(self.pageRain.GetParent(), 'Rain', True)
+        self.pageTemperature = TemperaturePanel(self.notebook, knmiData)
+        self.pageWind = WindPanel(self.notebook, knmiData)
+        self.pageSunshine = SunshinePanel(self.notebook, knmiData)
+        self.pageRain = RainPanel(self.notebook, knmiData)
+        self.notebook.AddPage(self.pageTemperature, 'Temperature', True)
+        self.notebook.AddPage(self.pageWind, 'Wind', True)
+        self.notebook.AddPage(self.pageSunshine, 'Sunshine', True)
+        self.notebook.AddPage(self.pageRain, 'Rain', True)
         self.notebook.ChangeSelection(0)
 
         self.mainPanel.SetSizer(sizer)

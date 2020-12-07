@@ -40,4 +40,3 @@ coll = COLLECT(exe,
                name='app')
 
 shutil.copytree('data', '{0}/app/data'.format(DISTPATH))
-shutil.copytree('layout', '{0}/app/layout'.format(DISTPATH))

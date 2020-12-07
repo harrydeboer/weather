@@ -1,5 +1,4 @@
 import wx
-import wx.xrc as xrc
 from panels.PagePanel import PagePanel
 from models.DataColumn import DataColumn
 from validators.ValidatorYears import ValidatorYears
@@ -12,18 +11,26 @@ class RainPanel(PagePanel):
         super().__init__(parent, knmiData)
 
         # The makeDayCurveSpeed and makeDayCurveDirection button click events are bound to callbacks.
-        self.makeDayCurveAmount = xrc.XRCCTRL(parent, "makeDayCurveAmount")
+        self.makeDayCurveAmount = wx.Button(self, label='make day curve amount')
         self.makeDayCurveAmount.Bind(wx.EVT_BUTTON, self.OnMakeDayCurve)
         self.makeDayCurveAmount.SetValidator(ValidatorYears('dayCurve',
                                                             self.firstYear, self.lastYear, self.errorMessage))
 
-        self.makeDayCurvePercentage = xrc.XRCCTRL(parent, "makeDayCurvePercentage")
+        self.makeDayCurvePercentage = wx.Button(self, label='make day curve percentage')
         self.makeDayCurvePercentage.Bind(wx.EVT_BUTTON, self.OnMakeDayCurvePercentage)
         self.makeDayCurvePercentage.SetValidator(
             ValidatorYears('rainPercentage', self.firstYear, self.lastYear, self.errorMessage))
 
         self._hoverStyleButton(self.makeDayCurveAmount)
         self._hoverStyleButton(self.makeDayCurvePercentage)
+
+        sizerV = wx.BoxSizer(wx.VERTICAL)
+        sizerH = wx.BoxSizer(wx.HORIZONTAL)
+        sizerH.Add(self.makeDayCurveAmount)
+        sizerH.Add(self.makeDayCurvePercentage)
+        sizerV.Add(sizerH)
+
+        self._addToPage(sizerV)
 
     def OnMakeDayCurve(self, _):
 
