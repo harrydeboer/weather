@@ -3,6 +3,7 @@ from panels.TemperaturePanel import TemperaturePanel
 from panels.WindPanel import WindPanel
 from panels.SunshinePanel import SunshinePanel
 from panels.RainPanel import RainPanel
+from panels.MainPanel import MainPanel
 from panels.TopPanel import TopPanel
 from models.KNMIData import KNMIData
 import locale
@@ -18,9 +19,7 @@ class WeatherApp(wx.App):
         locale.setlocale(locale.LC_ALL, 'en_GB')
 
         self.mainFrame = wx.Frame(None, wx.ID_ANY, 'Weather', size=(550, 700))
-        self.mainPanel = wx.Panel(self.mainFrame)
-        self.mainPanel.SetBackgroundColour('#1C6CBC')
-        self.mainPanel.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        self.mainPanel = MainPanel(self.mainFrame)
         self.topPanel = TopPanel(self.mainPanel)
 
         sizer = wx.BoxSizer(wx.VERTICAL)

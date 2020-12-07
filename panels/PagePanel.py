@@ -1,6 +1,4 @@
 import wx
-import wx.xrc as xrc
-from wx.core import StaticText
 from services.DayYearArrayBuildService import DayYearArrayBuildService
 from models.Curve import Curve
 from models.DataColumn import DataColumn
@@ -19,10 +17,10 @@ class PagePanel(wx.Panel):
         self.knmiData = knmiData
 
         # The first and last years of the file are retrieved and put in the GUI as initial year range values.
-        self.firstYear = wx.lib.intctrl.IntCtrl(self)
+        self.firstYear = wx.lib.intctrl.IntCtrl(self, size=(50, 20))
         self.firstYear.SetValue(self.knmiData.minYearFile)
         self.firstYear.SetValidator(ValidatorIntTextCtrl())
-        self.lastYear = wx.lib.intctrl.IntCtrl(self)
+        self.lastYear = wx.lib.intctrl.IntCtrl(self, size=(50, 20))
         self.lastYear.SetValue(self.knmiData.maxYearFile)
         self.lastYear.SetValidator(ValidatorIntTextCtrl())
 
@@ -50,8 +48,14 @@ class PagePanel(wx.Panel):
 
     def _addToPage(self, sizer: wx.Sizer):
 
-        sizer.Add(self.firstYear)
-        sizer.Add(self.lastYear)
+        sizerGrid = wx.GridSizer(2, 2, 10, 10)
+        labelFirstYear = wx.StaticText(self, -1, 'First year: ')
+        labelLastYear = wx.StaticText(self, -1, 'Last year: ')
+        sizerGrid.Add(labelFirstYear)
+        sizerGrid.Add(self.firstYear)
+        sizerGrid.Add(labelLastYear)
+        sizerGrid.Add(self.lastYear)
+        sizer.Add(sizerGrid)
         sizer.Add(self.errorMessage)
         sizer.Add(self.plotPanel)
         sizer.Add(self.mouseOver)
