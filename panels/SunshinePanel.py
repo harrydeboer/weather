@@ -11,15 +11,15 @@ class SunshinePanel(PagePanel):
         super().__init__(parent, knmiData)
 
         # The makeDayCurve button click event is bound to a callback and a validator.
-        self.makeDayCurve = wx.Button(self, label='make day curve')
-        self.makeDayCurve.Bind(wx.EVT_BUTTON, self.OnMakeDayCurve)
-        self.makeDayCurve.SetValidator(
+        self.makeDayCurvePercentage = wx.Button(self, label='make day curve percentage')
+        self.makeDayCurvePercentage.Bind(wx.EVT_BUTTON, self.OnMakeDayCurve)
+        self.makeDayCurvePercentage.SetValidator(
             ValidatorFirstYearLastYear('dayCurve', self.firstYear, self.lastYear, self.errorMessage))
 
-        self._hoverStyleButton(self.makeDayCurve)
+        self._hoverStyleButton(self.makeDayCurvePercentage)
 
         sizerV = wx.BoxSizer(wx.VERTICAL)
-        sizerV.Add(self.makeDayCurve)
+        sizerV.Add(self.makeDayCurvePercentage)
 
         self._addToPage(sizerV)
 
