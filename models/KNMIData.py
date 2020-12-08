@@ -17,7 +17,7 @@ class KNMIData:
                 if row[0][0] == '#':
                     continue
 
-                # During april 1945 a lot of data is not available. 31 march data is put over all days of april.
+                # During april 1945 a lot of data is not available. 31 march 1945 data is put over all days of april.
                 elif len(row) > 10 and row[4] == '     ' and row[1][:6] == '194504':
                     if lastGoodRow is None:
                         lastGoodRow = txtList[-1:][0]
@@ -30,7 +30,7 @@ class KNMIData:
 
         self.array = np.asarray(txtList)
 
-        # Remove the days of the first years until all data is available.
+        # Remove the days of the first years until most data is available.
         for index, row in enumerate(self.array):
 
             year = int(row[1][:4])

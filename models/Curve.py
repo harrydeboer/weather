@@ -1,33 +1,32 @@
 import numpy as np
 import datetime as dt
+from typing import Tuple
 
 
 class Curve:
 
     def __init__(self, y: np.ndarray, isDayCurve: bool, firstYear: int, lastYear: int):
 
-        if isDayCurve:
-            x = np.arange(1, 366)
-        else:
-            x = np.arange(firstYear, lastYear + 1)
-
-        self.x = x
-        boxPoints = 30
-
-        # If isDayCurve the smooth curve is made over three times the original array.
-        # That way the endpoints of the inbetween array match. For the year curve the reverse curve is added.
-        if isDayCurve:
-            ySmooth = self.__makeSmoothCurve(np.append(y, [y, y]), boxPoints)
-        else:
-            ySmooth = self.__makeSmoothCurveLinearExtrapolate(y, boxPoints)
-
         self.y = y
 
         if isDayCurve:
+            self.x = np.arange(1, 366)
+            boxPoints = 30
+
+            # The start and end of a day curve should match. The data is tripled in order for the smoothing
+            # to behave well at the endpoints.
+            ySmooth = self.__makeSmoothCurve(np.append(y, [y, y]), boxPoints)
+
+            # The middle part of the smooth curve is retrieved.
             length = int(ySmooth.size / 3)
             self.ySmooth = ySmooth[length: 2 * length]
         else:
-            self.ySmooth = ySmooth
+            self.x = np.arange(firstYear, lastYear + 1)
+
+            # The boxPoints is a fraction of the difference between lastYear and firstYear.
+            boxPoints = int((lastYear - firstYear) / 120 * 30)
+
+            self.ySmooth = self.__makeSmoothCurveLinearExtrapolate(y, boxPoints)
 
     @staticmethod
     def __makeSmoothCurve(y, boxPoints) -> np.ndarray:
@@ -38,23 +37,23 @@ class Curve:
         return result
 
     # A moving average is used to smooth the curve. At the edges the data is extrapolated linearly with a regression.
-    # That way the smoothing behaves well at the edges.
+    # That way the smoothing behaves well at the edges. After smoothing the extrapolated data is removed.
     @classmethod
     def __makeSmoothCurveLinearExtrapolate(cls, y, boxPoints) -> np.ndarray:
 
         yregress = y[:boxPoints]
         xregress = np.arange(0, boxPoints)
 
-        alpha, beta = cls.__calculateAlphaBeta(yregress, xregress)
+        intercept, slope = cls.__calculateInterceptAndSlope(yregress, xregress)
 
-        yprepend = np.arange(boxPoints * (-1), 0) * beta + alpha
+        yprepend = np.arange(boxPoints * (-1), 0) * slope + intercept
 
         yregress = y[-boxPoints:]
         xregress = np.arange(y.size - boxPoints, y.size)
 
-        alpha, beta = cls.__calculateAlphaBeta(yregress, xregress)
+        intercept, slope = cls.__calculateInterceptAndSlope(yregress, xregress)
 
-        yappend = np.arange(y.size, y.size + boxPoints) * beta + alpha
+        yappend = np.arange(y.size, y.size + boxPoints) * slope + intercept
 
         box = np.ones(boxPoints) / boxPoints
         result = np.convolve(np.append(np.append(yprepend, y), yappend), box, mode='same')
@@ -62,15 +61,15 @@ class Curve:
         return result[boxPoints:-boxPoints]
 
     @staticmethod
-    def __calculateAlphaBeta(yregress: np.ndarray, xregress: np.ndarray):
+    def __calculateInterceptAndSlope(yregress: np.ndarray, xregress: np.ndarray) -> Tuple[float, float]:
 
         ymean = yregress.mean()
         xmean = xregress.mean()
 
-        beta = np.sum((xregress - xmean) * (yregress - ymean)) / np.sum((xregress - xmean) * (xregress - xmean))
-        alpha = ymean - beta * xmean
+        slope = np.sum((xregress - xmean) * (yregress - ymean)) / np.sum((xregress - xmean) * (xregress - xmean))
+        intercept = ymean - slope * xmean
 
-        return alpha, beta
+        return intercept, slope
 
     # The first day of summer is the point where the temperature is equal to the temperature 92 days later.
     # On average a season has 92 days. The smooth curves are substracted with 92 days interval.

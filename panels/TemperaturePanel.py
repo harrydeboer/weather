@@ -1,26 +1,28 @@
 import wx
 from panels.PagePanel import PagePanel
-from validators.ValidatorYears import ValidatorYears
+from validators.ValidatorFirstYearLastYear import ValidatorFirstYearLastYear
 from models.DataColumn import DataColumn
 
 
 class TemperaturePanel(PagePanel):
 
     def __init__(self, parent, knmiData):
+
         super().__init__(parent, knmiData)
 
         # The textOutput shows the first day of summer or the temperature increase.
         self.textOutput = wx.StaticText(self, -1, '')
         self.textOutput.SetForegroundColour('#FFFFFF')
 
-        # The makeDayCurve and makeYearCurve button click events are bound to callbacks.
+        # The makeDayCurve and makeYearCurve button click events are bound to callbacks and validators.
         self.makeDayCurve = wx.Button(self, label='make day curve')
         self.makeDayCurve.Bind(wx.EVT_BUTTON, self.OnMakeDayCurveTemp)
-        self.makeDayCurve.SetValidator(ValidatorYears('dayCurve', self.firstYear, self.lastYear, self.errorMessage))
-
+        self.makeDayCurve.SetValidator(
+            ValidatorFirstYearLastYear('dayCurve', self.firstYear, self.lastYear, self.errorMessage))
         self.makeYearCurve = wx.Button(self, label="make year curve")
         self.makeYearCurve.Bind(wx.EVT_BUTTON, self.OnMakeYearCurveTemp)
-        self.makeYearCurve.SetValidator(ValidatorYears('yearCurve', self.firstYear, self.lastYear, self.errorMessage))
+        self.makeYearCurve.SetValidator(
+            ValidatorFirstYearLastYear('yearCurve', self.firstYear, self.lastYear, self.errorMessage))
 
         self._hoverStyleButton(self.makeDayCurve)
         self._hoverStyleButton(self.makeYearCurve)
@@ -36,8 +38,8 @@ class TemperaturePanel(PagePanel):
 
     def OnMakeDayCurveTemp(self, _):
 
-        firstYear = int(self.firstYear.GetValue())
-        lastYear = int(self.lastYear.GetValue())
+        firstYear = self.firstYear.GetValue()
+        lastYear = self.lastYear.GetValue()
 
         self._plotRawSmooth(firstYear, lastYear, DataColumn.minTemp, True, True)
         curve = self._plotRawSmooth(firstYear, lastYear, DataColumn.meanTemp, False, True)
@@ -47,7 +49,7 @@ class TemperaturePanel(PagePanel):
 
     def OnMakeYearCurveTemp(self, _):
 
-        curve = self._plotRawSmooth(int(self.firstYear.GetValue()), int(self.lastYear.GetValue()),
+        curve = self._plotRawSmooth(self.firstYear.GetValue(), self.lastYear.GetValue(),
                                     DataColumn.meanTemp, True, False)
 
         self.textOutput.SetLabel('Temperature increase: ' +

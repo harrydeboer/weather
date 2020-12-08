@@ -5,14 +5,14 @@ from models.DataColumn import DataColumn
 
 class DayYearArrayBuildService:
 
-    # An array of weather values per year and per day is made.
+    # An array of weather values per day and per year is made.
     @staticmethod
-    def makeArray(data: np.ndarray, firstYear: int, lastYear: int, columnName: DataColumn) -> np.ndarray:
+    def makeArray(knmiData: np.ndarray, firstYear: int, lastYear: int, columnName: DataColumn) -> np.ndarray:
 
-        dates = data[:, 1]
+        dates = knmiData[:, 1]
 
         columnNumber, factor = columnName.value
-        column = data[:, columnNumber]
+        column = knmiData[:, columnNumber]
 
         # The date array is initialized with zeros.
         dayYearArray = np.zeros([365, lastYear - firstYear + 1])
@@ -20,7 +20,7 @@ class DayYearArrayBuildService:
         # Looping through all dates and placing the values in the dayYearArray.
         for index, date in enumerate(dates):
 
-            # The csv file has dateformat YYYYMMDD and is split into years, months and days.
+            # The KNMI txt file has dateformat YYYYMMDD and this is split into a year, month and day.
             year = int(date[:4])
             month = int(date[4:6])
             day = int(date[6:8])
@@ -33,7 +33,7 @@ class DayYearArrayBuildService:
             days_in_the_year = (dt.date(year, month, day) - dt.date(year, 1, 1)).days
 
             # When the year is a leap year the day number is lowered after leap day.
-            # This way there are also 365 days used in the leap year.
+            # This way there are 365 days used in the leap year also.
             if year % 4 == 0 and days_in_the_year > 59:
                 days_in_the_year -= 1
 

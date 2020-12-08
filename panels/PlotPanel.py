@@ -12,7 +12,7 @@ class PlotPanel(wx.Panel):
 
     def __init__(self, parent):
 
-        wx.Panel.__init__(self, parent, -1)
+        super().__init__(parent, -1)
 
         self.fig = Figure((5, 4), 75)
         self.canvas = FigureCanvas(self, -1, self.fig)
@@ -45,14 +45,15 @@ class PlotPanel(wx.Panel):
 
         for index, curve in enumerate(self.axes.get_lines()):
 
-            # The curve is read only when the mouse is precisely upon it.
+            # The curve is read when the mouse is precisely upon it.
             curve.set_pickradius(1)
 
             # The smooth plot is plotted after the raw plot. The raw is thus even and the smooth uneven.
+            # The mouse over events are for the smooth plots only.
             if not index % 2 == 0:
                 if curve.contains(event)[0]:
 
-                    # The year plot has years (xdata) starting from 1901. The day plot has days (xdata) till 366.
+                    # The year plot has years (xdata) starting from 1906. The day plot has days (xdata) till 366.
                     # The year plot can thus be distinguished by the xdata being greater than 365.
                     if event.xdata > 366:
                         mouseOver.SetLabel("Mouse over curve: " + str(int(event.xdata)) +

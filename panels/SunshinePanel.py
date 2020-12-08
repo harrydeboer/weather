@@ -1,7 +1,7 @@
 import wx
 from panels.PagePanel import PagePanel
 from models.DataColumn import DataColumn
-from validators.ValidatorYears import ValidatorYears
+from validators.ValidatorFirstYearLastYear import ValidatorFirstYearLastYear
 
 
 class SunshinePanel(PagePanel):
@@ -10,10 +10,11 @@ class SunshinePanel(PagePanel):
 
         super().__init__(parent, knmiData)
 
-        # The makeDayCurveSpeed and makeDayCurveDirection button click events are bound to callbacks.
+        # The makeDayCurve button click event is bound to a callback and a validator.
         self.makeDayCurve = wx.Button(self, label='make day curve')
         self.makeDayCurve.Bind(wx.EVT_BUTTON, self.OnMakeDayCurve)
-        self.makeDayCurve.SetValidator(ValidatorYears('dayCurve', self.firstYear, self.lastYear, self.errorMessage))
+        self.makeDayCurve.SetValidator(
+            ValidatorFirstYearLastYear('dayCurve', self.firstYear, self.lastYear, self.errorMessage))
 
         self._hoverStyleButton(self.makeDayCurve)
 
@@ -24,5 +25,4 @@ class SunshinePanel(PagePanel):
 
     def OnMakeDayCurve(self, _):
 
-        self._plotRawSmooth(int(self.firstYear.GetValue()), int(self.lastYear.GetValue()), DataColumn.percSunshine,
-                            True, True)
+        self._plotRawSmooth(self.firstYear.GetValue(), self.lastYear.GetValue(), DataColumn.percSunshine, True, True)

@@ -18,8 +18,11 @@ class WeatherApp(wx.App):
         # The locale is en_GB. This way the language is english.
         locale.setlocale(locale.LC_ALL, 'en_GB')
 
-        self.mainFrame = wx.Frame(None, wx.ID_ANY, 'Weather', size=(550, 700))
-        self.mainPanel = MainPanel(self.mainFrame)
+        width = 550
+        height = 700
+
+        self.mainFrame = wx.Frame(None, wx.ID_ANY, 'Weather', size=(width, height))
+        self.mainPanel = MainPanel(self.mainFrame, width, height)
         self.topPanel = TopPanel(self.mainPanel)
 
         sizer = wx.BoxSizer(wx.VERTICAL)

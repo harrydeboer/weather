@@ -1,22 +1,26 @@
 import wx
+from wx.lib.intctrl import IntCtrl
+from wx.core import StaticText
 
 
 # Validates the first year and last year when a curve is to be calculated.
-class ValidatorYears(wx.Validator):
+class ValidatorFirstYearLastYear(wx.Validator):
 
-    def __init__(self, curveType: str, firstYear, lastYear, errorMessage):
-        wx.Validator.__init__(self)
+    def __init__(self, curveType: str, firstYear: IntCtrl, lastYear: IntCtrl, errorMessage: StaticText):
+
+        super().__init__()
+
         self.Bind(wx.EVT_BUTTON, self.OnClick)
         self.firstYear = firstYear
         self.lastYear = lastYear
         self.curveType = curveType
         self.errorMessage = errorMessage
-        self.firstYearInitial = int(firstYear.GetValue())
-        self.lastYearInitial = int(lastYear.GetValue())
+        self.firstYearInitial = firstYear.GetValue()
+        self.lastYearInitial = lastYear.GetValue()
 
     def Clone(self):
 
-        return ValidatorYears(self.curveType, self.firstYear, self.lastYear, self.errorMessage)
+        return ValidatorFirstYearLastYear(self.curveType, self.firstYear, self.lastYear, self.errorMessage)
 
     def Validate(self, win):
 
@@ -32,8 +36,8 @@ class ValidatorYears(wx.Validator):
 
     def OnClick(self, event):
 
-        firstYear = int(self.firstYear.GetValue())
-        lastYear = int(self.lastYear.GetValue())
+        firstYear = self.firstYear.GetValue()
+        lastYear = self.lastYear.GetValue()
 
         if lastYear < firstYear:
 
@@ -41,16 +45,16 @@ class ValidatorYears(wx.Validator):
 
             return
 
-        if firstYear < int(self.firstYearInitial) or lastYear > int(self.lastYearInitial):
+        if firstYear < self.firstYearInitial or lastYear > self.lastYearInitial:
 
             self.errorMessage.SetLabel('Years out of range ' +
                                        str(self.firstYearInitial) + '-' + str(self.lastYearInitial) + '.')
 
             return
 
-        if self.curveType == 'yearCurve' and lastYear - firstYear < 5 - 1:
+        if self.curveType == 'yearCurve' and lastYear - firstYear + 1 < 9:
 
-            self.errorMessage.SetLabel('Range should be 5 years at least when making a year curve.')
+            self.errorMessage.SetLabel('Range should be 9 years at least when making a year curve.')
 
             return
 

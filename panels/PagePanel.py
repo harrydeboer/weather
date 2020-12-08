@@ -3,7 +3,6 @@ from services.DayYearArrayBuildService import DayYearArrayBuildService
 from models.Curve import Curve
 from models.DataColumn import DataColumn
 from panels.PlotPanel import PlotPanel
-from validators.ValidatorIntTextCtrl import ValidatorIntTextCtrl
 from wx import lib
 from wx.lib import intctrl
 
@@ -12,17 +11,15 @@ class PagePanel(wx.Panel):
 
     def __init__(self, parent, knmiData):
 
-        wx.Panel.__init__(self, parent, -1)
+        super().__init__(parent, -1)
 
         self.knmiData = knmiData
 
         # The first and last years of the file are retrieved and put in the GUI as initial year range values.
         self.firstYear = wx.lib.intctrl.IntCtrl(self, size=(50, 20))
         self.firstYear.SetValue(self.knmiData.minYearFile)
-        self.firstYear.SetValidator(ValidatorIntTextCtrl())
         self.lastYear = wx.lib.intctrl.IntCtrl(self, size=(50, 20))
         self.lastYear.SetValue(self.knmiData.maxYearFile)
-        self.lastYear.SetValidator(ValidatorIntTextCtrl())
 
         # The mouseOver shows the mouseover event text of the plot.
         self.mouseOver = wx.StaticText(self, -1, "Mouse over curve: \n")
@@ -46,6 +43,7 @@ class PagePanel(wx.Panel):
 
         return curve
 
+    # The pages add the pagepanel controls and texts to their sizer.
     def _addToPage(self, sizer: wx.Sizer):
 
         sizerGrid = wx.GridSizer(2, 2, 10, 10)
