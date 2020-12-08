@@ -9,7 +9,7 @@ class TestSunshinePanel(unittest.TestCase):
 
         app = WeatherApp(False)
         event = wx.CommandEvent(wx.wxEVT_COMMAND_BUTTON_CLICKED, wx.ID_OK)
-        button = app.pageSunshine.makeDayCurve
+        button = app.pageSunshine.makeDayCurvePercentage
         event.SetEventObject(button)
         button.ProcessEvent(event)
 
