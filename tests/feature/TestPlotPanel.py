@@ -17,10 +17,20 @@ class TestPlotPanel(unittest.TestCase):
         button.ProcessEvent(event)
 
         self.assertEqual(app.pageTemperature.mouseOver.GetLabel(), 'Mouse over curve: \n')
-        xdata = 157.94
-        ydata = 19.704
+        width, height = page.plotPanel.canvas.get_width_height()
+        curve = page.plotPanel.axes.get_lines()[1]
+        curve.set_pickradius(1)
+
+        for itemx in range(width):
+            for itemy in range(height):
+                mouseEvent = MouseEvent('motion_notify_event', page.plotPanel.canvas, x=itemx, y=itemy)
+                if curve.contains(mouseEvent)[0]:
+                    break
+            else:
+                continue
+
+            break
 
         # Make an mouse over event and process the event.
-        mouseEvent = MouseEvent('motion_notify_event', page.plotPanel.canvas, x=174, y=227)
         app.pageTemperature.plotPanel.onPlotHover(mouseEvent, page.mouseOver)
         self.assertNotEqual(page.mouseOver.GetLabel(), 'Mouse over curve: \n')
