@@ -16,7 +16,7 @@ class TestPlotPanel(unittest.TestCase):
         event.SetEventObject(button)
         button.ProcessEvent(event)
 
-        self.assertEqual(app.pageTemperature.mouseOver.GetLabel(), 'Mouse over curve: \n')
+        mouseOverBefore = app.pageTemperature.mouseOver.GetLabel()
         width, height = page.plotPanel.canvas.get_width_height()
         curve = page.plotPanel.axes.get_lines()[1]
         curve.set_pickradius(1)
@@ -34,4 +34,4 @@ class TestPlotPanel(unittest.TestCase):
 
         # Make an mouse over event and process the event.
         app.pageTemperature.plotPanel.onPlotHover(mouseEvent, page.mouseOver)
-        self.assertNotEqual(page.mouseOver.GetLabel(), 'Mouse over curve: \n')
+        self.assertNotEqual(page.mouseOver.GetLabel(), mouseOverBefore)
