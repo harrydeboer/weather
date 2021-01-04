@@ -21,6 +21,7 @@ class TestPlotPanel(unittest.TestCase):
         curve = page.plotPanel.axes.get_lines()[1]
         curve.set_pickradius(1)
 
+        mouseEvent = None
         for itemx in range(width):
             for itemy in range(height):
                 mouseEvent = MouseEvent('motion_notify_event', page.plotPanel.canvas, x=itemx, y=itemy)
