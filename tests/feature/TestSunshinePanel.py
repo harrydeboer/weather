@@ -9,8 +9,9 @@ class TestSunshinePanel(unittest.TestCase):
 
         app = WeatherApp(False)
         event = wx.CommandEvent(wx.wxEVT_COMMAND_BUTTON_CLICKED, wx.ID_OK)
-        button = app.pageSunshine.makeDayCurvePercentage
+        page = app.pageSunshine
+        button = page.makeDayCurvePercentage
         event.SetEventObject(button)
         button.ProcessEvent(event)
 
-        self.assertEqual(1, 1)
+        self.assertEqual(len(page.plotPanel.axes.get_lines()), 2)

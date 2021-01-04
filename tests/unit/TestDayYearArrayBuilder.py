@@ -8,7 +8,7 @@ class TestDayYearArrayBuilder(unittest.TestCase):
 
     def testMakeTempArray(self):
 
-        firstYear = 1904
+        firstYear = 1906
         lastYear = 2019
         knmiData = KNMIData()
         tempArray = DayYearArrayBuildService.makeArray(knmiData.array, firstYear, lastYear, DataColumn.meanTemp)

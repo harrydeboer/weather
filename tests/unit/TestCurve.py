@@ -11,7 +11,7 @@ class TestCurve(unittest.TestCase):
 
     def setUp(self):
 
-        self.firstYear = 1904
+        self.firstYear = 1906
         self.lastYear = 2019
         self.knmiData = KNMIData()
         tempArray = DayYearArrayBuildService.makeArray(self.knmiData.array,
@@ -42,7 +42,7 @@ class TestCurve(unittest.TestCase):
 
     def testMeanOfAngle(self):
 
-        firstYear = 1904
+        firstYear = 1906
         lastYear = 2019
         speed2D = DayYearArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, DataColumn.windSpeedVA)
         angle2D = DayYearArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, DataColumn.windDirection)

@@ -9,18 +9,20 @@ class TestTemperaturePanel(unittest.TestCase):
 
         app = WeatherApp(False)
         event = wx.CommandEvent(wx.wxEVT_COMMAND_BUTTON_CLICKED, wx.ID_OK)
-        button = app.pageTemperature.makeDayCurve
+        page = app.pageTemperature
+        button = page.makeDayCurve
         event.SetEventObject(button)
         button.ProcessEvent(event)
 
-        self.assertEqual(1, 1)
+        self.assertEqual(len(page.plotPanel.axes.get_lines()), 6)
 
     def testOnMakeYearCurveTemp(self):
 
         app = WeatherApp(False)
         event = wx.CommandEvent(wx.wxEVT_COMMAND_BUTTON_CLICKED, wx.ID_OK)
-        button = app.pageTemperature.makeYearCurve
+        page = app.pageTemperature
+        button = page.makeYearCurve
         event.SetEventObject(button)
         button.ProcessEvent(event)
 
-        self.assertEqual(1, 1)
+        self.assertEqual(len(page.plotPanel.axes.get_lines()), 2)

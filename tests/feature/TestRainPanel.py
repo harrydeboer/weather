@@ -9,18 +9,21 @@ class TestRainPanel(unittest.TestCase):
 
         app = WeatherApp(False)
         event = wx.CommandEvent(wx.wxEVT_COMMAND_BUTTON_CLICKED, wx.ID_OK)
-        button = app.pageRain.makeDayCurveAmount
+        page = app.pageRain
+        button = page.makeDayCurveAmount
         event.SetEventObject(button)
         button.ProcessEvent(event)
 
-        self.assertEqual(1, 1)
+        self.assertEqual(len(page.plotPanel.axes.get_lines()), 2)
 
     def testOnMakeDayCurvePercentage(self):
 
         app = WeatherApp(False)
         event = wx.CommandEvent(wx.wxEVT_COMMAND_BUTTON_CLICKED, wx.ID_OK)
-        button = app.pageRain.makeDayCurvePercentage
+        page = app.pageRain
+        page.firstYear.SetValue(1930)
+        button = page.makeDayCurvePercentage
         event.SetEventObject(button)
         button.ProcessEvent(event)
 
-        self.assertEqual(1, 1)
+        self.assertEqual(len(page.plotPanel.axes.get_lines()), 2)
