@@ -32,6 +32,6 @@ class TestPlotPanel(unittest.TestCase):
 
             break
 
-        # Make an mouse over event and process the event.
-        app.pageTemperature.plotPanel.onPlotHover(mouseEvent, page.mouseOver)
+        page.plotPanel.canvas.motion_notify_event(mouseEvent.x, mouseEvent.y)
+
         self.assertNotEqual(page.mouseOver.GetLabel(), mouseOverBefore)
