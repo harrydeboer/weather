@@ -7,15 +7,15 @@ class DayYearArrayBuildService:
 
     # An array of weather values per day and per year is made.
     @staticmethod
-    def makeArray(knmiData: np.ndarray, firstYear: int, lastYear: int, columnName: DataColumn) -> np.ndarray:
+    def make_array(knmi_data: np.ndarray, first_year: int, last_year: int, column_name: DataColumn) -> np.ndarray:
 
-        dates = knmiData[:, 1]
+        dates = knmi_data[:, 1]
 
-        columnNumber, factor = columnName.value
-        column = knmiData[:, columnNumber]
+        column_number, factor = column_name.value
+        column = knmi_data[:, column_number]
 
         # The date array is initialized with zeros.
-        dayYearArray = np.zeros([365, lastYear - firstYear + 1])
+        day_year_array = np.zeros([365, last_year - first_year + 1])
 
         # Looping through all dates and placing the values in the dayYearArray.
         for index, date in enumerate(dates):
@@ -26,7 +26,7 @@ class DayYearArrayBuildService:
             day = int(date[6:8])
 
             # The years outside the GUI range are neglected.
-            if year < firstYear or year > lastYear:
+            if year < first_year or year > last_year:
                 continue
 
             # The year, month and day are converted into a day number of the year.
@@ -37,6 +37,6 @@ class DayYearArrayBuildService:
             if year % 4 == 0 and days_in_the_year > 59:
                 days_in_the_year -= 1
 
-            dayYearArray[days_in_the_year, year - firstYear] = float(column[index]) * factor
+            day_year_array[days_in_the_year, year - first_year] = float(column[index]) * factor
 
-        return dayYearArray
+        return day_year_array

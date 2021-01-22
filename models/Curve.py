@@ -5,33 +5,33 @@ from typing import Tuple
 
 class Curve:
 
-    def __init__(self, y: np.ndarray, isDayCurve: bool, firstYear: int, lastYear: int):
+    def __init__(self, y: np.ndarray, is_day_curve: bool, first_year: int, last_year: int):
 
         self.y = y
 
-        if isDayCurve:
+        if is_day_curve:
             self.x = np.arange(1, 366)
-            boxPoints = 30
+            box_points = 30
 
             # The start and end of a day curve should match. The data is tripled in order for the smoothing
             # to behave well at the endpoints.
-            ySmooth = self.__makeSmoothCurve(np.append(y, [y, y]), boxPoints)
+            y_smooth = self.__make_smooth_curve(np.append(y, [y, y]), box_points)
 
             # The middle part of the smooth curve is retrieved.
-            length = int(ySmooth.size / 3)
-            self.ySmooth = ySmooth[length: 2 * length]
+            length = int(y_smooth.size / 3)
+            self.y_smooth = y_smooth[length: 2 * length]
         else:
-            self.x = np.arange(firstYear, lastYear + 1)
+            self.x = np.arange(first_year, last_year + 1)
 
-            # The boxPoints is a fraction of the difference between lastYear and firstYear.
-            boxPoints = int((lastYear - firstYear) / 120 * 30)
+            # The box_points is a fraction of the difference between lastYear and firstYear.
+            box_points = int((last_year - first_year) / 120 * 30)
 
-            self.ySmooth = self.__makeSmoothCurveLinearExtrapolate(y, boxPoints)
+            self.y_smooth = self.__make_smooth_curve_linear_extrapolate(y, box_points)
 
     @staticmethod
-    def __makeSmoothCurve(y, boxPoints) -> np.ndarray:
+    def __make_smooth_curve(y, box_points) -> np.ndarray:
 
-        box = np.ones(boxPoints) / boxPoints
+        box = np.ones(box_points) / box_points
         result = np.convolve(y, box, mode='same')
 
         return result
@@ -39,35 +39,36 @@ class Curve:
     # A moving average is used to smooth the curve. At the edges the data is extrapolated linearly with a regression.
     # That way the smoothing behaves well at the edges. After smoothing the extrapolated data is removed.
     @classmethod
-    def __makeSmoothCurveLinearExtrapolate(cls, y, boxPoints) -> np.ndarray:
+    def __make_smooth_curve_linear_extrapolate(cls, y, box_points) -> np.ndarray:
 
-        yregress = y[:boxPoints]
-        xregress = np.arange(0, boxPoints)
+        y_regress = y[:box_points]
+        x_regress = np.arange(0, box_points)
 
-        intercept, slope = cls.__calculateInterceptAndSlope(yregress, xregress)
+        intercept, slope = cls.__calculate_intercept_and_slope(y_regress, x_regress)
 
-        yprepend = np.arange(boxPoints * (-1), 0) * slope + intercept
+        y_prepend = np.arange(box_points * (-1), 0) * slope + intercept
 
-        yregress = y[-boxPoints:]
-        xregress = np.arange(y.size - boxPoints, y.size)
+        y_regress = y[-box_points:]
+        x_regress = np.arange(y.size - box_points, y.size)
 
-        intercept, slope = cls.__calculateInterceptAndSlope(yregress, xregress)
+        intercept, slope = cls.__calculate_intercept_and_slope(y_regress, x_regress)
 
-        yappend = np.arange(y.size, y.size + boxPoints) * slope + intercept
+        y_append = np.arange(y.size, y.size + box_points) * slope + intercept
 
-        box = np.ones(boxPoints) / boxPoints
-        result = np.convolve(np.append(np.append(yprepend, y), yappend), box, mode='same')
+        box = np.ones(box_points) / box_points
+        result = np.convolve(np.append(np.append(y_prepend, y), y_append), box, mode='same')
 
-        return result[boxPoints:-boxPoints]
+        return result[box_points:-box_points]
 
     @staticmethod
-    def __calculateInterceptAndSlope(yregress: np.ndarray, xregress: np.ndarray) -> Tuple[float, float]:
+    def __calculate_intercept_and_slope(y_regress: np.ndarray, x_regress: np.ndarray) -> Tuple[float, float]:
 
-        ymean = yregress.mean()
-        xmean = xregress.mean()
+        y_mean = y_regress.mean()
+        x_mean = x_regress.mean()
 
-        slope = np.sum((xregress - xmean) * (yregress - ymean)) / np.sum((xregress - xmean) * (xregress - xmean))
-        intercept = ymean - slope * xmean
+        slope = np.sum((x_regress - x_mean) * (y_regress - y_mean)) \
+            / np.sum((x_regress - x_mean) * (x_regress - x_mean))
+        intercept = y_mean - slope * x_mean
 
         return intercept, slope
 
@@ -76,48 +77,48 @@ class Curve:
     # Then the absolute value is taken.
     # Then the first day of summer is the point where these absolute values are minimal.
     # Then the first day is translated into a date object.
-    def getFirstDateSummer(self) -> dt:
+    def get_first_date_summer(self) -> dt:
 
-        subtract = np.subtract(self.ySmooth[92:], self.ySmooth[:365 - 92])
-        firstDayOfSummer = int(np.where(np.absolute(subtract) == np.min(np.absolute(subtract)))[0][0])
+        subtract = np.subtract(self.y_smooth[92:], self.y_smooth[:365 - 92])
+        first_day_of_summer = int(np.where(np.absolute(subtract) == np.min(np.absolute(subtract)))[0][0])
 
-        return dt.datetime(2019, 1, 1) + dt.timedelta(firstDayOfSummer)
+        return dt.datetime(2019, 1, 1) + dt.timedelta(first_day_of_summer)
 
     @staticmethod
-    def meanOfAngle(speed2D: np.ndarray, angle2D: np.ndarray) -> np.ndarray:
+    def mean_of_angle(speed_2d: np.ndarray, angle_2d: np.ndarray) -> np.ndarray:
 
         # The KNMI angle starts at 0 (north) and goes clockwise to 360 degrees.
         # The x and y coordinates are calculated because a mean can only be taken from x and y coordinates.
-        x = speed2D * np.sin(angle2D / 360 * 2 * np.pi)
-        y = speed2D * np.cos(angle2D / 360 * 2 * np.pi)
-        xmean = x.mean(1)
-        ymean = y.mean(1)
+        x = speed_2d * np.sin(angle_2d / 360 * 2 * np.pi)
+        y = speed_2d * np.cos(angle_2d / 360 * 2 * np.pi)
+        x_mean = x.mean(1)
+        y_mean = y.mean(1)
 
         angle = np.zeros(365)
 
-        for index, value in enumerate(xmean):
-            angle[index] = np.arctan2(ymean[index], xmean[index]) / np.pi * 180
+        for index, value in enumerate(x_mean):
+            angle[index] = np.arctan2(y_mean[index], x_mean[index]) / np.pi * 180
 
             # The arctan2 function start at -Pi (west) and goes counterclockwise to Pi.
             # The angle starts at 0 (east) and goes to 360.
             # There is a gap of 2 Pi in the west point and this gap is closed
             # by adding 360 degrees when y < 0 (y changes sign in the west point).
-            if ymean[index] < 0:
+            if y_mean[index] < 0:
                 angle[index] += 360
 
         return angle
 
     # The curve can have a mean per month if it is a day curve.
     @staticmethod
-    def getMonthMean(y: np.ndarray, month: int, year: int) -> float:
+    def get_month_mean(y: np.ndarray, month: int, year: int) -> float:
 
         if y.size != 365:
             raise Exception('This stat can only be calculated for day curves.')
 
-        dayNumberBegin = dt.datetime(year, month, 1).timetuple().tm_yday
+        day_number_begin = dt.datetime(year, month, 1).timetuple().tm_yday
         if month == 12:
-            dayNumberEnd = dt.datetime(year, month, 31).timetuple().tm_yday
+            day_number_end = dt.datetime(year, month, 31).timetuple().tm_yday
         else:
-            dayNumberEnd = dt.datetime(year, month + 1, 1).timetuple().tm_yday - 1
+            day_number_end = dt.datetime(year, month + 1, 1).timetuple().tm_yday - 1
 
-        return y[dayNumberBegin - 1:dayNumberEnd].mean(axis=0)
+        return y[day_number_begin - 1:day_number_end].mean(axis=0)

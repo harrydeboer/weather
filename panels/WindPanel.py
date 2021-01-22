@@ -8,53 +8,54 @@ from validators.ValidatorFirstYearLastYear import ValidatorFirstYearLastYear
 
 class WindPanel(PagePanel):
 
-    def __init__(self, parent, knmiData):
+    def __init__(self, parent, knmi_data):
 
-        super().__init__(parent, knmiData)
+        super().__init__(parent, knmi_data)
 
         self.info = wx.StaticText(self, -1, " The wind direction is an angle between 0 and 360 degrees. \n" +
                                   " 0 is east, 90 is north, 180 is west and 270 is south.")
         self.info.SetForegroundColour('#FFFFFF')
 
         # The makeDayCurveSpeed and makeDayCurveDirection button click events are bound to callbacks and validators.
-        self.makeDayCurveSpeed = wx.Button(self, label='make day curve speed')
-        self.makeDayCurveSpeed.Bind(wx.EVT_BUTTON, self.OnMakeDayCurveSpeed)
-        self.makeDayCurveSpeed.SetValidator(
-            ValidatorFirstYearLastYear('dayCurve', self.firstYear, self.lastYear, self.errorMessage))
-        self.makeDayCurveDirection = wx.Button(self, label='make day curve direction')
-        self.makeDayCurveDirection.Bind(wx.EVT_BUTTON, self.OnMakeDayCurveVector)
-        self.makeDayCurveDirection.SetValidator(
-            ValidatorFirstYearLastYear('dayCurve', self.firstYear, self.lastYear, self.errorMessage))
+        self.make_day_curve_speed = wx.Button(self, label='make day curve speed')
+        self.make_day_curve_speed.Bind(wx.EVT_BUTTON, self.on_make_day_curve_speed)
+        self.make_day_curve_speed.SetValidator(
+            ValidatorFirstYearLastYear('dayCurve', self.first_year, self.last_year, self.error_message))
+        self.make_day_curve_direction = wx.Button(self, label='make day curve direction')
+        self.make_day_curve_direction.Bind(wx.EVT_BUTTON, self.on_make_day_curve_vector)
+        self.make_day_curve_direction.SetValidator(
+            ValidatorFirstYearLastYear('dayCurve', self.first_year, self.last_year, self.error_message))
 
-        self._hoverStyleButton(self.makeDayCurveSpeed)
-        self._hoverStyleButton(self.makeDayCurveDirection)
+        self._hover_style_button(self.make_day_curve_speed)
+        self._hover_style_button(self.make_day_curve_direction)
 
-        sizerV = wx.BoxSizer(wx.VERTICAL)
-        sizerV.Add(self.info)
-        sizerH = wx.BoxSizer(wx.HORIZONTAL)
-        sizerH.Add(self.makeDayCurveSpeed)
-        sizerH.Add(self.makeDayCurveDirection)
-        sizerV.Add(sizerH)
+        sizer_v = wx.BoxSizer(wx.VERTICAL)
+        sizer_v.Add(self.info)
+        sizer_h = wx.BoxSizer(wx.HORIZONTAL)
+        sizer_h.Add(self.make_day_curve_speed)
+        sizer_h.Add(self.make_day_curve_direction)
+        sizer_v.Add(sizer_h)
 
-        self._addToPage(sizerV)
+        self._add_to_page(sizer_v)
 
-    def OnMakeDayCurveSpeed(self, _):
+    def on_make_day_curve_speed(self, _):
 
-        self._plotRawSmooth(self.firstYear.GetValue(), self.lastYear.GetValue(), DataColumn.windSpeed, True, True)
+        self._plot_raw_smooth(self.first_year.GetValue(), self.last_year.GetValue(), DataColumn.wind_speed, True, True)
 
-    def OnMakeDayCurveVector(self, _):
+    def on_make_day_curve_vector(self, _):
 
-        firstYear = self.firstYear.GetValue()
-        lastYear = self.lastYear.GetValue()
+        first_year = self.first_year.GetValue()
+        last_year = self.last_year.GetValue()
 
         # The vector average speed and direction are retrieved as a 2 dimensional day year array.
-        speed2D = DayYearArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, DataColumn.windSpeedVA)
-        angle2D = DayYearArrayBuildService.makeArray(self.knmiData.array,
-                                                     firstYear, lastYear, DataColumn.windDirection)
+        speed_2d = DayYearArrayBuildService.make_array(self.knmiData.array, first_year,
+                                                       last_year, DataColumn.wind_speed_va)
+        angle_2d = DayYearArrayBuildService.make_array(self.knmiData.array,
+                                                       first_year, last_year, DataColumn.wind_direction)
 
         # The 2 dimensional angle and speed are averaged over the years.
-        angle = Curve.meanOfAngle(speed2D, angle2D)
+        angle = Curve.mean_of_angle(speed_2d, angle_2d)
 
-        curve = Curve(angle, True, firstYear, lastYear)
+        curve = Curve(angle, True, first_year, last_year)
 
-        self.plotPanel.plot(curve.x, curve.y, curve.ySmooth, True)
+        self.plot_panel.plot(curve.x, curve.y, curve.y_smooth, True)

@@ -7,10 +7,10 @@ class KNMIData:
     def __init__(self):
 
         # Read txt file as list.
-        txtList = list()
+        txt_list = list()
         with open('data/KNMI.txt', newline='') as inputfile:
             reader = csv.reader(inputfile)
-            lastGoodRow = None
+            last_good_row = None
             for row in reader:
 
                 # The first few rows are comments starting with a #.
@@ -19,16 +19,16 @@ class KNMIData:
 
                 # During april 1945 a lot of data is not available. 31 march 1945 data is put over all days of april.
                 elif len(row) > 10 and row[4] == '     ' and row[1][:6] == '194504':
-                    if lastGoodRow is None:
-                        lastGoodRow = txtList[-1:][0]
-                    newlist = lastGoodRow
+                    if last_good_row is None:
+                        last_good_row = txt_list[-1:][0]
+                    newlist = last_good_row
                     newlist[1] = row[1]
-                    txtList.append(newlist)
+                    txt_list.append(newlist)
 
                 else:
-                    txtList.append(row)
+                    txt_list.append(row)
 
-        self.array = np.asarray(txtList)
+        self.array = np.asarray(txt_list)
 
         # Remove the days of the first years until most data is available.
         for index, row in enumerate(self.array):
@@ -41,17 +41,18 @@ class KNMIData:
                 break
 
         # Remove the days of the last year if it is not complete.
-        yearToDelete = None
+        year_to_delete = None
         for index, row in enumerate(reversed(self.array)):
 
             year = int(row[1][:4])
             if index == 0 and row[1][4:8] != '1231':
-                yearToDelete = year
+                year_to_delete = year
                 continue
 
-            if year == yearToDelete - 1:
-                self.array = self.array[:-index]
-                break
+            if year_to_delete is not None:
+                if year == year_to_delete - 1:
+                    self.array = self.array[:-index]
+                    break
 
         dates = self.array[:, 1]
         self.minYearFile = int(dates[1][:4])

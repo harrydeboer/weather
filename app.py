@@ -11,7 +11,7 @@ import locale
 
 class WeatherApp(wx.App):
 
-    def __init__(self, isShown: bool):
+    def __init__(self, is_shown: bool):
 
         super().__init__()
 
@@ -29,25 +29,25 @@ class WeatherApp(wx.App):
         sizer.Add(self.topPanel, 0, wx.EXPAND)
 
         # Read the KNMI data once. The data is passed to the panels.
-        knmiData = KNMIData()
+        knmi_data = KNMIData()
 
         # The notebook is initialized and the pages are added.
         self.notebook = wx.Notebook(self.mainPanel)
         sizer.Add(self.notebook, 1, wx.EXPAND)
-        self.pageTemperature = TemperaturePanel(self.notebook, knmiData)
-        self.pageWind = WindPanel(self.notebook, knmiData)
-        self.pageSunshine = SunshinePanel(self.notebook, knmiData)
-        self.pageRain = RainPanel(self.notebook, knmiData)
-        self.notebook.AddPage(self.pageTemperature, 'Temperature', True)
-        self.notebook.AddPage(self.pageWind, 'Wind', True)
-        self.notebook.AddPage(self.pageSunshine, 'Sunshine', True)
-        self.notebook.AddPage(self.pageRain, 'Rain', True)
+        self.page_temperature = TemperaturePanel(self.notebook, knmi_data)
+        self.page_wind = WindPanel(self.notebook, knmi_data)
+        self.page_sunshine = SunshinePanel(self.notebook, knmi_data)
+        self.page_rain = RainPanel(self.notebook, knmi_data)
+        self.notebook.AddPage(self.page_temperature, 'Temperature', True)
+        self.notebook.AddPage(self.page_wind, 'Wind', True)
+        self.notebook.AddPage(self.page_sunshine, 'Sunshine', True)
+        self.notebook.AddPage(self.page_rain, 'Rain', True)
         self.notebook.ChangeSelection(0)
 
         self.mainPanel.SetSizer(sizer)
         self.mainPanel.Layout()
 
-        self.mainFrame.Show(isShown)
+        self.mainFrame.Show(is_shown)
         self.SetTopWindow(self.mainFrame)
 
 

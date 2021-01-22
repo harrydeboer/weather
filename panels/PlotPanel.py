@@ -25,12 +25,12 @@ class PlotPanel(wx.Panel):
         self.SetSizer(sizer)
         self.Fit()
 
-    def plot(self, x: np.ndarray, y: np.ndarray, ySmooth: np.ndarray, cla: bool):
+    def plot(self, x: np.ndarray, y: np.ndarray, y_smooth: np.ndarray, cla: bool):
 
         if cla:
             self.axes.cla()
         self.axes.plot(x, y)
-        self.axes.plot(x, ySmooth)
+        self.axes.plot(x, y_smooth)
         curves = self.axes.get_lines()
 
         # The legend of the day curves is added when the max is plotted. The mean legend is added to the year curve.
@@ -41,7 +41,7 @@ class PlotPanel(wx.Panel):
 
         self.canvas.draw()
 
-    def onPlotHover(self, event: MouseEvent, mouseOver: StaticText):
+    def on_plot_hover(self, event: MouseEvent, mouse_over: StaticText):
 
         for index, curve in enumerate(self.axes.get_lines()):
 
@@ -56,11 +56,11 @@ class PlotPanel(wx.Panel):
                     # The year plot has years (xdata) starting from 1906. The day plot has days (xdata) till 366.
                     # The year plot can thus be distinguished by the xdata being greater than 365.
                     if event.xdata > 366:
-                        mouseOver.SetLabel("Mouse over curve: " + str(int(event.xdata)) +
-                                           " " + str(int(event.ydata * 10) / 10))
+                        mouse_over.SetLabel("Mouse over curve: " + str(int(event.xdata)) +
+                                            " " + str(int(event.ydata * 10) / 10))
                     else:
                         date = dt.datetime(2019, 1, 1) + dt.timedelta(int(event.xdata))
-                        monthMean = Curve.getMonthMean(curve.get_ydata(), int(date.strftime("%m")), 2019)
-                        mouseOver.SetLabel("Mouse over curve: " +
-                                           date.strftime("%d %B") + " " + str(int(event.ydata * 10) / 10) + "\n"
-                                           + "Month mean: " + str(int(monthMean * 10) / 10))
+                        month_mean = Curve.get_month_mean(curve.get_ydata(), int(date.strftime("%m")), 2019)
+                        mouse_over.SetLabel("Mouse over curve: " +
+                                            date.strftime("%d %B") + " " + str(int(event.ydata * 10) / 10) + "\n"
+                                            + "Month mean: " + str(int(month_mean * 10) / 10))

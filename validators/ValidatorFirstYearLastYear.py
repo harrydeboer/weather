@@ -6,21 +6,21 @@ from wx.core import StaticText
 # Validates the first year and last year when a curve is to be calculated.
 class ValidatorFirstYearLastYear(wx.Validator):
 
-    def __init__(self, curveType: str, firstYear: IntCtrl, lastYear: IntCtrl, errorMessage: StaticText):
+    def __init__(self, curve_type: str, first_year: IntCtrl, last_year: IntCtrl, error_message: StaticText):
 
         super().__init__()
 
-        self.Bind(wx.EVT_BUTTON, self.OnClick)
-        self.firstYear = firstYear
-        self.lastYear = lastYear
-        self.curveType = curveType
-        self.errorMessage = errorMessage
-        self.firstYearInitial = firstYear.GetValue()
-        self.lastYearInitial = lastYear.GetValue()
+        self.Bind(wx.EVT_BUTTON, self.on_click)
+        self.first_year = first_year
+        self.last_year = last_year
+        self.curve_type = curve_type
+        self.error_message = error_message
+        self.first_year_initial = first_year.GetValue()
+        self.last_year_initial = last_year.GetValue()
 
     def Clone(self):
 
-        return ValidatorFirstYearLastYear(self.curveType, self.firstYear, self.lastYear, self.errorMessage)
+        return ValidatorFirstYearLastYear(self.curve_type, self.first_year, self.last_year, self.error_message)
 
     def Validate(self, win):
 
@@ -34,36 +34,36 @@ class ValidatorFirstYearLastYear(wx.Validator):
 
         return True
 
-    def OnClick(self, event):
+    def on_click(self, event):
 
-        firstYear = self.firstYear.GetValue()
-        lastYear = self.lastYear.GetValue()
+        first_year = self.first_year.GetValue()
+        last_year = self.last_year.GetValue()
 
-        if lastYear < firstYear:
+        if last_year < first_year:
 
-            self.errorMessage.SetLabel('Last year cannot be smaller than first year.')
-
-            return
-
-        if firstYear < self.firstYearInitial or lastYear > self.lastYearInitial:
-
-            self.errorMessage.SetLabel('Years out of range ' +
-                                       str(self.firstYearInitial) + '-' + str(self.lastYearInitial) + '.')
+            self.error_message.SetLabel('Last year cannot be smaller than first year.')
 
             return
 
-        if self.curveType == 'yearCurve' and lastYear - firstYear + 1 < 9:
+        if first_year < self.first_year_initial or last_year > self.last_year_initial:
 
-            self.errorMessage.SetLabel('Range should be 9 years at least when making a year curve.')
-
-            return
-
-        if self.curveType == 'rainPercentage' and firstYear < 1930:
-
-            self.errorMessage.SetLabel('Range cannot be before 1930.')
+            self.error_message.SetLabel('Years out of range ' +
+                                        str(self.first_year_initial) + '-' + str(self.last_year_initial) + '.')
 
             return
 
-        self.errorMessage.SetLabel('')
+        if self.curve_type == 'yearCurve' and last_year - first_year + 1 < 9:
+
+            self.error_message.SetLabel('Range should be 9 years at least when making a year curve.')
+
+            return
+
+        if self.curve_type == 'rainPercentage' and first_year < 1930:
+
+            self.error_message.SetLabel('Range cannot be before 1930.')
+
+            return
+
+        self.error_message.SetLabel('')
 
         event.Skip()

@@ -8,9 +8,9 @@ class TestDayYearArrayBuilder(unittest.TestCase):
 
     def testMakeTempArray(self):
 
-        firstYear = 1906
-        lastYear = 2019
-        knmiData = KNMIData()
-        tempArray = DayYearArrayBuildService.makeArray(knmiData.array, firstYear, lastYear, DataColumn.meanTemp)
+        first_year = 1906
+        last_year = 2019
+        knmi_data = KNMIData()
+        temp_array = DayYearArrayBuildService.make_array(knmi_data.array, first_year, last_year, DataColumn.mean_temp)
 
-        self.assertEqual(tempArray.shape, (365, lastYear - firstYear + 1))
+        self.assertEqual(temp_array.shape, (365, last_year - first_year + 1))

@@ -11,41 +11,43 @@ class TestCurve(unittest.TestCase):
 
     def setUp(self):
 
-        self.firstYear = 1906
-        self.lastYear = 2019
-        self.knmiData = KNMIData()
-        tempArray = DayYearArrayBuildService.makeArray(self.knmiData.array,
-                                                    self.firstYear, self.lastYear, DataColumn.meanTemp)
-        self.curve = Curve(tempArray.mean(axis=1), True, self.firstYear, self.lastYear)
-        self.curveLinExtrapolate = Curve(tempArray.mean(axis=0), False, self.firstYear, self.lastYear)
+        self.first_year = 1906
+        self.last_year = 2019
+        self.knmi_data = KNMIData()
+        temp_array = DayYearArrayBuildService.make_array(self.knmi_data.array,
+                                                         self.first_year, self.last_year, DataColumn.mean_temp)
+        self.curve = Curve(temp_array.mean(axis=1), True, self.first_year, self.last_year)
+        self.curve_lin_extrapolate = Curve(temp_array.mean(axis=0), False, self.first_year, self.last_year)
 
     def testSmoothCurve(self):
 
-        self.assertEqual(self.curve.ySmooth.size, 365)
+        self.assertEqual(self.curve.y_smooth.size, 365)
 
     def testSmoothCurveLinExtrapolate(self):
 
-        self.assertEqual(self.curveLinExtrapolate.ySmooth.size, self.lastYear - self.firstYear + 1)
+        self.assertEqual(self.curve_lin_extrapolate.y_smooth.size, self.last_year - self.first_year + 1)
 
     def testFirstDateSummer(self):
 
-        date = self.curve.getFirstDateSummer()
+        date = self.curve.get_first_date_summer()
 
         self.assertIsInstance(date, datetime.date)
 
     def testCalcMonthMean(self):
 
-        ySmooth = np.ones(365)
-        mean = Curve.getMonthMean(ySmooth, 1, 2019)
+        y_smooth = np.ones(365)
+        mean = Curve.get_month_mean(y_smooth, 1, 2019)
 
         self.assertEqual(mean, 1)
 
     def testMeanOfAngle(self):
 
-        firstYear = 1906
-        lastYear = 2019
-        speed2D = DayYearArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, DataColumn.windSpeedVA)
-        angle2D = DayYearArrayBuildService.makeArray(self.knmiData.array, firstYear, lastYear, DataColumn.windDirection)
-        angle = self.curve.meanOfAngle(speed2D, angle2D)
+        first_year = 1906
+        last_year = 2019
+        speed_2d = DayYearArrayBuildService.make_array(self.knmi_data.array, first_year,
+                                                       last_year, DataColumn.wind_speed_va)
+        angle_2d = DayYearArrayBuildService.make_array(self.knmi_data.array, first_year,
+                                                       last_year, DataColumn.wind_direction)
+        angle = self.curve.mean_of_angle(speed_2d, angle_2d)
 
         self.assertEqual(angle.size, 365)
