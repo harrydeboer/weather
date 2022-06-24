@@ -1,0 +1,15 @@
+<div class="container">
+    <div class="row justify-content-md-center">
+        <input type="hidden" value="{{ minYear }}" id="minYear">
+        <input type="hidden" value="{{ maxYear }}" id="maxYear">
+        <div class="col col-lg-2"><label for="firstYear">First year: </label>
+            <input type="number" class="inputYear" value="{{ minYear }}" id="firstYear"></div>
+        <div class="col col-lg-2"><label for="lastYear">Last year: </label>
+            <input type="number" class="inputYear" value="{{ maxYear }}" id="lastYear"></div>
+        <div id="error-message"></div>
+        <div id="curve_chart" class="col col-lg-3"></div>
+    </div>
+</div>
+
+<div id="curveData" data-chart="{{ data }}"></div>
+<div id="textOutput">{{ text_output }}</div>

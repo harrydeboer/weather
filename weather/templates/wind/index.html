@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% include "graph.html" %}
+    <div>The wind direction is an angle between 0 and 360 degrees.
+        0 is east, 90 is north, 180 is west and 270 is south.</div>
+    <div>
+        <a class="btn btn-primary button" data-url="wind-speed">Make wind speed curve</a>
+        <a class="btn btn-primary button" data-url="wind-vector">Make wind vector curve</a>
+    </div>
+{% endblock %}
+{% block javascript %}
+    <script>
+        if (window.location.href.split('/')[3] === 'wind-speed') {
+            graph('Wind speed day curve', 'speed m/s', 'day number')
+        } else if (window.location.href.split('/')[3] === 'wind-vector') {
+            graph('Wind direction day curve', 'angle', 'day number')
+        }
+    </script>
+{% endblock %}
