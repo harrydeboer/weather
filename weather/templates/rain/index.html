@@ -7,12 +7,3 @@
         <a class="btn btn-primary button" data-url="rain-percentage">Make percentage rain curve</a>
     </div>
 {% endblock %}
-{% block javascript %}
-    <script>
-        if (window.location.href.split('/')[3] === 'rain-amount') {
-            graph('Rain amount day curve', 'amount rain mm', 'day number')
-        } else if (window.location.href.split('/')[3] === 'rain-percentage') {
-            graph('Rain percentage day curve', 'percentage rain', 'day number')
-        }
-    </script>
-{% endblock %}

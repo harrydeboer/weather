@@ -50,3 +50,7 @@ function drawChart(title, vertical, horizontal) {
 
     chart.draw(data, options);
 }
+
+if ($('#curve_chart').length > 0) {
+    graph($('#graph-title').val(), $('#graph-vertical').val(), $('#graph-horizontal').val())
+}

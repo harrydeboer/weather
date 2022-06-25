@@ -2,6 +2,9 @@
     <div class="row justify-content-md-center">
         <input type="hidden" value="{{ minYear }}" id="minYear">
         <input type="hidden" value="{{ maxYear }}" id="maxYear">
+        <input type="hidden" value="{{ title }}" id="graph-title">
+        <input type="hidden" value="{{ vertical }}" id="graph-vertical">
+        <input type="hidden" value="{{ horizontal }}" id="graph-horizontal">
         <div class="col col-lg-2"><label for="firstYear">First year: </label>
             <input type="number" class="inputYear" value="{{ minYear }}" id="firstYear"></div>
         <div class="col col-lg-2"><label for="lastYear">Last year: </label>
@@ -11,5 +14,5 @@
     </div>
 </div>
 
-<div id="curveData" data-chart="{{ data }}"></div>
+<div id="curveData" data-chart="{{ json }}"></div>
 <div id="textOutput">{{ text_output }}</div>

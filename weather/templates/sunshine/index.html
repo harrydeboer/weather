@@ -6,10 +6,3 @@
         <a class="btn btn-primary button" data-url="sunshine-percentage">Make sunshine curve</a>
     </div>
 {% endblock %}
-{% block javascript %}
-    <script>
-        if (window.location.href.split('/')[3] === 'sunshine-percentage') {
-            graph('Sunshine day curve', 'percentage of sun', 'day number')
-        }
-    </script>
-{% endblock %}

@@ -9,12 +9,3 @@
         <a class="btn btn-primary button" data-url="wind-vector">Make wind vector curve</a>
     </div>
 {% endblock %}
-{% block javascript %}
-    <script>
-        if (window.location.href.split('/')[3] === 'wind-speed') {
-            graph('Wind speed day curve', 'speed m/s', 'day number')
-        } else if (window.location.href.split('/')[3] === 'wind-vector') {
-            graph('Wind direction day curve', 'angle', 'day number')
-        }
-    </script>
-{% endblock %}

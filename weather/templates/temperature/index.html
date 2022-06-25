@@ -7,12 +7,3 @@
         <a class="btn btn-primary button" data-url="temperature-year">Make year curve</a>
     </div>
 {% endblock %}
-{% block javascript %}
-    <script>
-        if (window.location.href.split('/')[3] === 'temperature-day') {
-            graph('Temperature day curve', 'temperature °C', 'day number')
-        } else if (window.location.href.split('/')[3] === 'temperature-year') {
-            graph('Temperature year curve', 'temperature °C', 'year')
-        }
-    </script>
-{% endblock %}
