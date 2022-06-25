@@ -11,7 +11,7 @@ class UrlCache(object):
     _lock = threading.Lock()
 
     @classmethod
-    def get_mtime(cls, file):
+    def get_mtime(cls, file: str) -> str:
         try:
             return cls._mtime_sum[file]
         except KeyError:
@@ -26,5 +26,5 @@ class UrlCache(object):
 
 
 @register.simple_tag
-def mtime(model_object):
+def mtime(model_object: str) -> str:
     return UrlCache.get_mtime(model_object)

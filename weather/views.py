@@ -4,19 +4,21 @@ from weather.services import DayYearArrayBuildService, DataColumn
 from weather.models import KNMIData
 import json
 import numpy as np
+from django.http import HttpResponse
+from django.core.handlers.wsgi import WSGIRequest
 
 knmiData = KNMIData()
 
 
-def index(request):
+def index(request: WSGIRequest) -> HttpResponse:
     return render(request, 'homepage/index.html', {'data': [[]], 'text_output': ''})
 
 
-def temperature(request):
+def temperature(request: WSGIRequest) -> HttpResponse:
     return render(request, 'temperature/index.html', {'data': [[]], 'text_output': ''})
 
 
-def temperature_day(request, first_year, last_year):
+def temperature_day(request: WSGIRequest, first_year: int, last_year: int) -> HttpResponse:
     data = {}
     curve = _get_curve(DataColumn.mean_temp, 1, first_year, last_year)
     data['json'] = _curve_to_json(curve)
@@ -24,10 +26,11 @@ def temperature_day(request, first_year, last_year):
     data['title'] = 'Temperature year curve'
     data['vertical'] = 'temperature °C'
     data['horizontal'] = 'year'
-    return render(request, 'temperature/index.html', data)
+    jan = render(request, 'temperature/index.html', data)
+    return jan
 
 
-def temperature_year(request, first_year, last_year):
+def temperature_year(request: WSGIRequest, first_year: int, last_year: int) -> HttpResponse:
     data = {}
     curve = _get_curve(DataColumn.mean_temp, 0, first_year, last_year)
     data['json'] = _curve_to_json(curve)
@@ -38,11 +41,11 @@ def temperature_year(request, first_year, last_year):
     return render(request, 'temperature/index.html', data)
 
 
-def rain(request):
+def rain(request: WSGIRequest) -> HttpResponse:
     return render(request, 'rain/index.html', {'data': [[]], 'text_output': ''})
 
 
-def rain_amount(request, first_year, last_year):
+def rain_amount(request: WSGIRequest, first_year: int, last_year: int) -> HttpResponse:
     data = {}
     curve = _get_curve(DataColumn.amount_rain, 1, first_year, last_year)
     data['json'] = _curve_to_json(curve)
@@ -52,7 +55,7 @@ def rain_amount(request, first_year, last_year):
     return render(request, 'rain/index.html', data)
 
 
-def rain_percentage(request, first_year, last_year):
+def rain_percentage(request: WSGIRequest, first_year: int, last_year: int) -> HttpResponse:
     data = {}
     curve = _get_curve(DataColumn.perc_rain, 1, first_year, last_year)
     data['json'] = _curve_to_json(curve)
@@ -62,11 +65,11 @@ def rain_percentage(request, first_year, last_year):
     return render(request, 'rain/index.html', data)
 
 
-def wind(request):
+def wind(request: WSGIRequest) -> HttpResponse:
     return render(request, 'wind/index.html', {'data': [[]], 'text_output': ''})
 
 
-def wind_speed(request, first_year, last_year):
+def wind_speed(request: WSGIRequest, first_year: int, last_year: int) -> HttpResponse:
     data = {}
     curve = _get_curve(DataColumn.wind_speed, 1, first_year, last_year)
     data['json'] = _curve_to_json(curve)
@@ -76,7 +79,7 @@ def wind_speed(request, first_year, last_year):
     return render(request, 'wind/index.html', data)
 
 
-def wind_vector(request, first_year, last_year):
+def wind_vector(request: WSGIRequest, first_year: int, last_year: int) -> HttpResponse:
     data = {}
     # The vector average speed and direction are retrieved as a 2 dimensional day year array.
     speed_2d = DayYearArrayBuildService.make_array(knmiData.array, first_year,
@@ -95,11 +98,11 @@ def wind_vector(request, first_year, last_year):
     return render(request, 'wind/index.html', data)
 
 
-def sunshine(request):
+def sunshine(request: WSGIRequest) -> HttpResponse:
     return render(request, 'sunshine/index.html', {'data': [[]], 'text_output': ''})
 
 
-def sunshine_percentage(request, first_year, last_year):
+def sunshine_percentage(request: WSGIRequest, first_year: int, last_year: int) -> HttpResponse:
     data = {}
     curve = _get_curve(DataColumn.perc_sunshine, 1, first_year, last_year)
     data['json'] = _curve_to_json(curve)
@@ -109,12 +112,12 @@ def sunshine_percentage(request, first_year, last_year):
     return render(request, 'sunshine/index.html', data)
 
 
-def _get_curve(column_name, axis, first_year, last_year):
+def _get_curve(column_name: DataColumn, axis: int, first_year: int, last_year: int) -> Curve:
     array = DayYearArrayBuildService.make_array(knmiData.array, first_year, last_year, column_name)
     y = array.mean(axis=axis)
     return Curve(y, bool(axis), first_year, last_year)
 
 
-def _curve_to_json(curve):
+def _curve_to_json(curve: Curve) -> json:
     data_array = np.array([curve.x, curve.y, curve.y_smooth])
     return json.dumps(np.transpose(data_array).tolist())

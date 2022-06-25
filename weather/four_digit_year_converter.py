@@ -1,8 +1,10 @@
 class FourDigitYearConverter:
     regex = '[0-9]{4}'
 
-    def to_python(self, value):
+    @staticmethod
+    def to_python(value: str) -> int:
         return int(value)
 
-    def to_url(self, value):
+    @staticmethod
+    def to_url(value: str) -> str:
         return '%04d' % value
