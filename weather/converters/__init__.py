@@ -1,0 +1,2 @@
+class FourDigitYearConverter:
+    pass

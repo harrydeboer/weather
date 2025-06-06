@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, register_converter
-from weather.four_digit_year_converter import FourDigitYearConverter
+from weather.converters.four_digit_year_converter import FourDigitYearConverter
 import weather.views
 
 register_converter(FourDigitYearConverter, 'yyyy')
@@ -36,4 +36,7 @@ urlpatterns = [
     path('sunshine', weather.views.sunshine, name='sunshine'),
     path('sunshine-percentage/<yyyy:first_year>/<yyyy:last_year>/',
          weather.views.sunshine_percentage, name='sunshine_percentage'),
+    path('tropical', weather.views.tropical, name='tropical'),
+    path('tropical-year/<yyyy:first_year>/<yyyy:last_year>/', weather.views.tropical_year, name='tropical_year'),
+    path('extreme', weather.views.extreme, name='extreme'),
 ]

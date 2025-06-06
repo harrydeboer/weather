@@ -9,7 +9,6 @@ from django.core.handlers.wsgi import WSGIRequest
 
 knmiData = KNMIData()
 
-
 def index(request: WSGIRequest) -> HttpResponse:
     return render(request, 'homepage/index.html', {'data': [[]], 'text_output': ''})
 
@@ -26,8 +25,7 @@ def temperature_day(request: WSGIRequest, first_year: int, last_year: int) -> Ht
     data['title'] = 'Temperature year curve'
     data['vertical'] = 'temperature °C'
     data['horizontal'] = 'year'
-    jan = render(request, 'temperature/index.html', data)
-    return jan
+    return render(request, 'temperature/index.html', data)
 
 
 def temperature_year(request: WSGIRequest, first_year: int, last_year: int) -> HttpResponse:
@@ -111,6 +109,51 @@ def sunshine_percentage(request: WSGIRequest, first_year: int, last_year: int) -
     data['horizontal'] = 'day number'
     return render(request, 'sunshine/index.html', data)
 
+def tropical(request: WSGIRequest) -> HttpResponse:
+    return render(request, 'tropical/index.html', {'data': [[]], 'text_output': ''})
+
+def tropical_year(request: WSGIRequest, first_year: int, last_year: int) -> HttpResponse:
+    data = {}
+    temperatures = DayYearArrayBuildService.make_array(knmiData.array, first_year, last_year, DataColumn.max_temp)
+    data_temp = np.zeros(temperatures.shape[1])
+    index_year = 0
+    for year in np.transpose(temperatures):
+        for temp in year:
+            if temp >= 30:
+                data_temp[index_year] += 1
+        index_year += 1
+    data['json'] = _curve_to_json(Curve(data_temp, False, first_year, last_year))
+    data['title'] = 'Tropical days curve'
+    data['vertical'] = 'count'
+    data['horizontal'] = 'year'
+    return render(request, 'tropical/index.html', data)
+
+def extreme(request: WSGIRequest) -> HttpResponse:
+    data = {}
+    rain_amounts = DayYearArrayBuildService.make_array(knmiData.array, 1930, knmiData.maxYearFile, DataColumn.amount_rain)
+    data_temp = np.zeros(rain_amounts.shape[1])
+    index_year = 0
+    rain_amount_average = 0
+    for year in np.transpose(rain_amounts):
+        for amount in year:
+            rain_amount_average += amount
+    rain_amount_average = rain_amount_average / len(np.transpose(rain_amounts))
+    for year in np.transpose(rain_amounts):
+        index_day = 0
+        rain_amount_realized = 0
+        deficit_days = np.zeros(len(year))
+        for amount in year:
+            rain_amount_average_day = rain_amount_average / 365.24 * (index_day + 1)
+            rain_amount_realized += amount
+            deficit_days[index_day] = rain_amount_realized - rain_amount_average_day
+            index_day += 1
+        data_temp[index_year] = np.max(deficit_days)
+        index_year += 1
+    data['json'] = _curve_to_json(Curve(data_temp, False, 1930, knmiData.maxYearFile))
+    data['title'] = 'Max precipitation deficit'
+    data['vertical'] = 'deficit'
+    data['horizontal'] = 'year'
+    return render(request, 'extreme/index.html', data)
 
 def _get_curve(column_name: DataColumn, axis: int, first_year: int, last_year: int) -> Curve:
     array = DayYearArrayBuildService.make_array(knmiData.array, first_year, last_year, column_name)

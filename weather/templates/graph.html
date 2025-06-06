@@ -5,10 +5,12 @@
         <input type="hidden" value="{{ title }}" id="graph-title">
         <input type="hidden" value="{{ vertical }}" id="graph-vertical">
         <input type="hidden" value="{{ horizontal }}" id="graph-horizontal">
+        {% if no_years is defined %}
         <div class="col col-lg-2"><label for="firstYear">First year: </label>
             <input type="number" class="inputYear" value="{{ minYear }}" id="firstYear"></div>
         <div class="col col-lg-2"><label for="lastYear">Last year: </label>
             <input type="number" class="inputYear" value="{{ maxYear }}" id="lastYear"></div>
+        {% endif %}
         <div id="error-message"></div>
         <div id="curve_chart" class="col col-lg-3"></div>
     </div>
