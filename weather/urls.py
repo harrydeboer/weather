@@ -14,29 +14,27 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, register_converter
-from weather.converters.four_digit_year_converter import FourDigitYearConverter
+from django.urls import path
+from . import views
 import weather.views
-
-register_converter(FourDigitYearConverter, 'yyyy')
 
 urlpatterns = [
     path('', weather.views.index, name='home'),
     path('admin/', admin.site.urls),
     path('temperature', weather.views.temperature, name='temperature'),
-    path('temperature-day/<yyyy:first_year>/<yyyy:last_year>/', weather.views.temperature_day, name='temperature_day'),
-    path('temperature-year/<yyyy:first_year>/<yyyy:last_year>/',
+    path('temperature-day/<int:first_year>/<int:last_year>/', weather.views.temperature_day, name='temperature_day'),
+    path('temperature-year/<int:first_year>/<int:last_year>/',
          weather.views.temperature_year, name='temperature_year'),
     path('rain', weather.views.rain, name='rain'),
-    path('rain-amount/<yyyy:first_year>/<yyyy:last_year>/', weather.views.rain_amount, name='rain_amount'),
-    path('rain-percentage/<yyyy:first_year>/<yyyy:last_year>/', weather.views.rain_percentage, name='rain_percentage'),
+    path('rain-amount/<int:first_year>/<int:last_year>/', weather.views.rain_amount, name='rain_amount'),
+    path('rain-percentage/<int:first_year>/<int:last_year>/', weather.views.rain_percentage, name='rain_percentage'),
     path('wind', weather.views.wind, name='wind'),
-    path('wind-speed/<yyyy:first_year>/<yyyy:last_year>/', weather.views.wind_speed, name='wind_speed'),
-    path('wind-vector/<yyyy:first_year>/<yyyy:last_year>/', weather.views.wind_vector, name='wind_vector'),
+    path('wind-speed/<int:first_year>/<int:last_year>/', weather.views.wind_speed, name='wind_speed'),
+    path('wind-vector/<int:first_year>/<int:last_year>/', weather.views.wind_vector, name='wind_vector'),
     path('sunshine', weather.views.sunshine, name='sunshine'),
-    path('sunshine-percentage/<yyyy:first_year>/<yyyy:last_year>/',
+    path('sunshine-percentage/<int:first_year>/<int:last_year>/',
          weather.views.sunshine_percentage, name='sunshine_percentage'),
     path('tropical', weather.views.tropical, name='tropical'),
-    path('tropical-year/<yyyy:first_year>/<yyyy:last_year>/', weather.views.tropical_year, name='tropical_year'),
+    path('tropical-year/<int:first_year>/<int:last_year>/', weather.views.tropical_year, name='tropical_year'),
     path('extreme', weather.views.extreme, name='extreme'),
 ]

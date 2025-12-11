@@ -1,7 +1,7 @@
 from weather.models import KNMIData
 
 
-def min_max_years(request):
+def min_max_years():
     knmi_data = KNMIData()
     first_year = knmi_data.minYearFile
     last_year = knmi_data.maxYearFile
