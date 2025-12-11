@@ -135,8 +135,8 @@ class Curve:
         y_mean = y_regress.mean()
         x_mean = x_regress.mean()
 
-        slope = np.sum((x_regress - x_mean) * (y_regress - y_mean)) \
-            / np.sum((x_regress - x_mean) * (x_regress - x_mean))
+        slope = float(np.sum((x_regress - x_mean) * (y_regress - y_mean))) \
+            / float(np.sum((x_regress - x_mean) * (x_regress - x_mean)))
         intercept = y_mean - slope * x_mean
 
         return intercept, slope
@@ -146,7 +146,7 @@ class Curve:
     # Then the absolute value is taken.
     # Then the first day of summer is the point where these absolute values are minimal.
     # Then the first day is translated into a date object.
-    def get_first_date_summer(self) -> dt:
+    def get_first_date_summer(self) -> dt.datetime:
 
         subtract = np.subtract(self.y_smooth[92:], self.y_smooth[:365 - 92])
         first_day_of_summer = int(np.where(np.absolute(subtract) == np.min(np.absolute(subtract)))[0][0])
