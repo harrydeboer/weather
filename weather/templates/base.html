@@ -3,6 +3,7 @@
 {% load mtime %}
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Title</title>
     <link rel="apple-touch-icon" sizes="180x180" href="{% mtime 'favicon/apple-touch-icon.png' %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% mtime 'favicon/favicon-32x32.png' %}">
@@ -15,24 +16,44 @@
     <link rel="stylesheet" href="{% mtime 'css/app.css' %}">
 </head>
 <body>
-<div class="row text-center" id="mainRow">
-    <h1>Check out this weather app!</h1>
-    <div>
-        <a href="{% url 'home' %}" class="pageLink">Home</a>
-        <a href="{% url 'temperature' %}" class="pageLink">Temperature</a>
-        <a href="{% url 'rain' %}" class="pageLink">Rain</a>
-        <a href="{% url 'sunshine' %}" class="pageLink">Sunshine</a>
-        <a href="{% url 'wind' %}" class="pageLink">Wind</a>
-        <a href="{% url 'tropical' %}" class="pageLink">Tropical</a>
-        <a href="{% url 'extreme' %}" class="pageLink">Extreme</a>
+<div class="container">
+    <div class="row">
+        <div class="col"><h1>Check out this weather app!</h1></div>
     </div>
-    {% block content %}
-
-    {% endblock %}
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script src="{% mtime 'js/jquery.min.js' %}"></script>
-    <script src="{% mtime 'js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% mtime 'js/app.min.js' %}"></script>
 </div>
+{% block nav %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbar_supported_content"
+                    aria-controls="navbar_supported_content"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar_supported_content">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li><a href="{% url 'home' %}" class="pageLink">Home</a></li>
+                    <li><a href="{% url 'temperature' %}" class="pageLink">Temperature</a></li>
+                    <li><a href="{% url 'rain' %}" class="pageLink">Rain</a></li>
+                    <li><a href="{% url 'sunshine' %}" class="pageLink">Sunshine</a></li>
+                    <li><a href="{% url 'wind' %}" class="pageLink">Wind</a></li>
+                    <li><a href="{% url 'tropical' %}" class="pageLink">Tropical</a></li>
+                    <li><a href="{% url 'extreme' %}" class="pageLink">Extreme</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+<div class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="{% mtime 'js/jquery.min.js' %}"></script>
+<script src="{% mtime 'js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% mtime 'js/app.min.js' %}"></script>
 </body>
 </html>
